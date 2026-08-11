@@ -1,0 +1,20 @@
+{
+  "name": "@hien/design-tokens",
+  "version": "1.0.0",
+  "description": "Brand design tokens for Gauthier Hien projects",
+  "license": "MIT",
+  "type": "module",
+  "files": ["theme.css", "DESIGN.md"],
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./DESIGN.md": "./DESIGN.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gauthierhien/design-tokens.git"
+  },
+  "keywords": ["design-tokens", "brand", "tailwind", "css"],
+  "publishConfig": {
+    "access": "public"
+  }
+}

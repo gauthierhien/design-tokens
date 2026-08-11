@@ -1,0 +1,48 @@
+/**
+ * @hien/design-tokens — brand tokens
+ * Consume in Tailwind v4 apps via: @import "@hien/design-tokens/theme.css";
+ * Fonts must be loaded by the consuming app (e.g. @fontsource-variable/geist).
+ */
+
+@theme {
+  --color-background: var(--background);
+  --color-background-muted: var(--background-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--foreground-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-border: var(--border);
+
+  --font-sans: "Geist Variable", system-ui, sans-serif;
+  --font-mono:
+    "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+:root {
+  --background: oklch(98.5% 0 0);
+  --background-muted: oklch(96% 0 0);
+  --foreground: oklch(20.5% 0 0);
+  --foreground-muted: oklch(70.8% 0 0);
+  --accent: oklch(0.9402 0.205 113.88);
+  --accent-hover: oklch(0.5541 0.1539 40.04);
+  --border: oklch(92.2% 0 0);
+}
+
+.theme-dark {
+  --background: oklch(14.5% 0 0);
+  --background-muted: oklch(20.5% 0 0);
+  --foreground: oklch(97% 0 0);
+  --foreground-muted: oklch(43.9% 0 0);
+  --accent: oklch(0.9402 0.205 113.88);
+  --accent-hover: oklch(0.5541 0.1539 40.04);
+  --border: oklch(26.9% 0 0);
+
+  --color-background: var(--background);
+  --color-background-muted: var(--background-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--foreground-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-border: var(--border);
+}

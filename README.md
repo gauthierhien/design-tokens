@@ -7,7 +7,7 @@ Brand design tokens for [Gauthier Hien](https://github.com/gauthierhien) project
 Via Git tag (recommended until npm publish):
 
 ```bash
-pnpm add github:gauthierhien/design-tokens#v1.2.0
+pnpm add github:gauthierhien/design-tokens#v1.2.1
 ```
 
 ## Usage (Tailwind v4)

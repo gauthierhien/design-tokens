@@ -1,6 +1,6 @@
 {
   "name": "@hien/design-tokens",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Brand design tokens for Gauthier Hien projects",
   "license": "MIT",
   "type": "module",

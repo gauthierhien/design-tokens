@@ -12,11 +12,20 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-border: var(--border);
+  --color-status: var(--status);
 
   --font-sans: "Geist Variable", system-ui, sans-serif;
   --font-mono:
     "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco,
     Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --text-fluid-display: clamp(2.75rem, 6vw + 1rem, 5.5rem);
+  --text-fluid-h1: clamp(2.25rem, 4vw + 1rem, 4rem);
+  --text-fluid-h2: clamp(1.75rem, 2.5vw + 0.75rem, 2.75rem);
+  --text-fluid-h3: clamp(1.25rem, 1vw + 1rem, 1.75rem);
+  --text-fluid-body: clamp(1rem, 0.2vw + 0.95rem, 1.125rem);
+  --text-fluid-lead: clamp(1.125rem, 0.5vw + 1rem, 1.375rem);
+  --text-small: 16px;
 }
 
 :root {
@@ -27,6 +36,7 @@
   --accent: oklch(0.9402 0.205 113.88);
   --accent-hover: oklch(0.5541 0.1539 40.04);
   --border: oklch(92.2% 0 0);
+  --status: oklch(0.7227 0.192 149.58);
 }
 
 .theme-dark {
@@ -37,6 +47,7 @@
   --accent: oklch(0.9402 0.205 113.88);
   --accent-hover: oklch(0.5541 0.1539 40.04);
   --border: oklch(26.9% 0 0);
+  --status: oklch(0.7227 0.192 149.58);
 
   --color-background: var(--background);
   --color-background-muted: var(--background-muted);
@@ -45,4 +56,5 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-border: var(--border);
+  --color-status: var(--status);
 }

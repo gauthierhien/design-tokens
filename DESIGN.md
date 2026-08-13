@@ -21,38 +21,68 @@ typography:
     fontFamily: Geist Variable
   mono:
     fontFamily: Geist Mono Variable
-  display:
-    fontFamily: Geist Variable
-    fontSize: "clamp(2.75rem, 6vw + 1rem, 5.5rem)"
-    fontWeight: 500
-    letterSpacing: -0.05em
   h1:
     fontFamily: Geist Variable
-    fontSize: "clamp(2.25rem, 4vw + 1rem, 4rem)"
+    fontSize: 2.25rem
+    fontSizeMd: 3rem
+    fontSizeLg: 3.75rem
+    fontSizeXl: 4.5rem
+    fontSize2xl: 6rem
     fontWeight: 500
     letterSpacing: -0.05em
   h2:
     fontFamily: Geist Variable
-    fontSize: "clamp(1.75rem, 2.5vw + 0.75rem, 2.75rem)"
+    fontSize: 1.875rem
+    fontSizeMd: 2.25rem
+    fontSizeLg: 3rem
+    fontSizeXl: 3.75rem
+    fontSize2xl: 4.5rem
     fontWeight: 500
     letterSpacing: -0.05em
   h3:
     fontFamily: Geist Variable
-    fontSize: "clamp(1.25rem, 1vw + 1rem, 1.75rem)"
+    fontSize: 1.25rem
+    fontSizeMd: 1.5rem
+    fontSizeLg: 1.875rem
+    fontSize2xl: 2.25rem
     fontWeight: 500
     letterSpacing: -0.05em
+  h4:
+    fontFamily: Geist Variable
+    fontSize: 1.125rem
+    fontSizeMd: 1.25rem
+    fontSizeLg: 1.5rem
+    fontSizeXl: 1.875rem
+    fontSize2xl: 2.25rem
+    fontWeight: 400
+    letterSpacing: -0.025em
   lead:
     fontFamily: Geist Variable
-    fontSize: "clamp(1.125rem, 0.5vw + 1rem, 1.375rem)"
+    fontSize: 1.125rem
+    fontSizeMd: 1.25rem
+    fontSizeLg: 1.5rem
     fontWeight: 400
   body:
     fontFamily: Geist Variable
-    fontSize: "clamp(1rem, 0.2vw + 0.95rem, 1.125rem)"
+    fontSize: 1rem
     fontWeight: 400
+    letterSpacing: -0.025em
+    lineHeight: 1.5rem
+  body-prose:
+    fontFamily: Geist Variable
+    fontSize: 1rem
+    fontSizeMd: 1.125rem
+    fontSizeLg: 1.25rem
+    fontWeight: 400
+    letterSpacing: -0.025em
   label:
     fontFamily: Geist Mono Variable
     fontSize: 0.75rem
     fontWeight: 300
+  strong:
+    fontFamily: Geist Variable
+    fontSize: 0.875rem
+    fontWeight: 600
 rounded:
   full: 9999px
   none: 0px
@@ -87,8 +117,9 @@ expressed exclusively in `oklch`. There is no site-wide dark mode: `.theme-dark`
 applied locally (e.g. a footer band), not as a global theme toggle.
 
 This package ships **runtime tokens only** (`theme.css`): colors, font *names*, and
-the fluid type scale. Spacing, radii, buttons, layout, and Header/Footer stay in
-each app — they are documented here as guidance, not exported CSS.
+the type scale (portfolio breakpoint ladder). Spacing, radii, buttons, layout,
+and Header/Footer stay in each app — they are documented here as guidance, not
+exported CSS.
 
 ## Colors
 
@@ -109,14 +140,18 @@ availability LEDs. Muted foreground handles captions and secondary copy.
 ## Typography
 
 Geist Variable for body and headings. Geist Mono Variable for labels, metadata,
-tags, and times. Headings use `font-medium` and tight tracking (`tracking-tighter`).
+tags, and times. Headings use `font-medium` and tight tracking (`tracking-tighter`);
+`h4` is `font-normal` + `tracking-tight`.
 
-Shipped as `--text-fluid-*` in `theme.css` (display, h1, h2, h3, body, lead).
-Consuming apps also apply a matching Tailwind breakpoint ladder on `h1`–`h4`
-(`text-4xl` → `2xl:text-8xl` for `h1`). Strong convention: `<span>` means mono +
-small size (labels) — do not use `<span>` for body copy. That `span` rule and the
-heading `@layer base` live in each app, not here. Consuming apps must load fonts
-themselves (`@fontsource-variable/geist` and the mono package).
+Shipped as `--text-h1` … `--text-h4`, `--text-body`, `--text-body-prose`,
+`--text-lead`, `--text-label`, `--text-strong` (Tailwind utilities `text-h1`, etc.).
+Sizes follow the portfolio ladder at `md` / `lg` / `xl` / `2xl` (e.g. `h1` is
+2.25rem → 6rem). Use `text-body` on UI copy and `text-body-prose` on article
+bodies (steps up at `md`/`lg`). Hero `.display` in apps maps to `text-h1`.
+
+Element selectors (`h1`, `span` = mono label, `@layer base`) live in each app —
+consume the tokens there, do not re-declare the rem ladder. Consuming apps must
+load fonts themselves (`@fontsource-variable/geist` and the mono package).
 
 ## Layout
 
@@ -149,7 +184,7 @@ Guidance only — component CSS lives in each app, not in this package.
 
 **Do**
 
-- Consume tokens via Tailwind classes (`bg-background`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`).
+- Consume tokens via Tailwind classes (`bg-background`, `text-accent`, `border-border`, `bg-status`, `text-h1`, `text-body`, `font-sans`, `font-mono`).
 - Keep `oklch` values; do not convert to hex “for simplicity.”
 - Version this package (semver + git tags) and bump the dependency in each app.
 

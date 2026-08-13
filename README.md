@@ -7,7 +7,7 @@ Brand design tokens for [Gauthier Hien](https://github.com/gauthierhien) project
 Via Git tag (recommended until npm publish):
 
 ```bash
-pnpm add github:gauthierhien/design-tokens#v1.1.0
+pnpm add github:gauthierhien/design-tokens#v1.2.0
 ```
 
 ## Usage (Tailwind v4)
@@ -19,7 +19,7 @@ pnpm add github:gauthierhien/design-tokens#v1.1.0
 
 Load **Geist** and **Geist Mono** in the consuming app (e.g. `@fontsource-variable/geist` + mono). Fonts are not bundled here.
 
-Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the fluid type scale (`--text-fluid-display` and siblings). For local inverted surfaces, wrap with `.theme-dark`.
+Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the type scale (`text-h1` … `text-h4`, `text-body`, `text-body-prose`, `text-lead`, `text-label`). For local inverted surfaces, wrap with `.theme-dark`.
 
 ## Agents
 

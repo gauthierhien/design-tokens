@@ -102,6 +102,12 @@ components:
     textColor: "{colors.foreground}"
     rounded: "{rounded.full}"
     padding: 12px 24px
+  button-outline:
+    backgroundColor: transparent
+    textColor: "{colors.foreground}"
+    borderColor: "{colors.border}"
+    borderColorHover: "{colors.foreground}"
+    rounded: "{rounded.full}"
   tag:
     backgroundColor: "{colors.foreground}"
     textColor: "{colors.background}"
@@ -177,6 +183,7 @@ Guidance only — component CSS lives in each app, not in this package.
 
 - **Primary button** — `foreground` fill on `background` text; hover via opacity.
 - **Secondary button** — `background-muted` fill.
+- **Outline button** (large pill CTA, e.g. footer "Reach out", "Download") — transparent fill, `border` hairline at rest; hover strengthens the border to `foreground`. The button's opacity never changes. Over an image or a dark surface, use `background` for text and border, with the border at 40% at rest and 100% on hover.
 - **Tag** — Mono uppercase; `foreground` on `background`.
 - Do not bake portfolio Header/Footer/Modules into the brand — those are app patterns.
 

@@ -1,0 +1,24 @@
+{
+  "name": "hien-design-tokens-showcase",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --port 4330",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@hien/design-tokens": "file:..",
+    "@keystatic/core": "^0.6.9",
+    "@lucide/astro": "^1.48.0",
+    "@paper-design/shaders": "0.0.81",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.5",
+    "react": "19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "packageManager": "pnpm@12.4.2"
+}

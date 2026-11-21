@@ -11,6 +11,7 @@ import Carousel from "@hien/design-tokens/Carousel.astro";
 import MeshBackground from "@hien/design-tokens/MeshBackground.astro";
 import { Image } from "astro:assets";
 import pkg from "@hien/design-tokens/package.json";
+import themeCss from "@hien/design-tokens/theme.css?raw";
 import app1 from "../assets/app-1.png";
 import app2 from "../assets/app-2.png";
 import hero from "../assets/hero.jpg";
@@ -25,6 +26,17 @@ const colors = [
   { token: "border", utility: "bg-border", note: "Filets, séparation" },
   { token: "status", utility: "bg-status", note: "LED de disponibilité" },
 ];
+
+// Valeurs lues dans theme.css : la vitrine ne peut pas diverger du package.
+const block = (selector: string) => {
+  const start = themeCss.indexOf(selector);
+  const body = themeCss.slice(themeCss.indexOf("{", start) + 1, themeCss.indexOf("}", start));
+  return Object.fromEntries(
+    [...body.matchAll(/--([\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]),
+  );
+};
+const light = block(":root {");
+const dark = block(':root[data-theme="dark"] {');
 
 const type = [
   { name: "h1", sample: "Design Engineer", el: "h1" },
@@ -45,6 +57,13 @@ const type = [
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>hien.design.tokens</title>
+    <script is:inline>
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem("hd-theme") || "auto";
+      } catch {
+        document.documentElement.dataset.theme = "auto";
+      }
+    </script>
   </head>
   <body>
     <Header currentSite="home" tagline="Design system" />
@@ -54,6 +73,13 @@ const type = [
         <div class="page-grid-content flex flex-col gap-6">
           <span>@hien/design-tokens v{pkg.version}</span>
           <h1>hien.design.tokens</h1>
+          <div class="flex gap-2" role="group" aria-label="Mode">
+            {[["light", "Clair"], ["dark", "Sombre"], ["auto", "Système"]].map(([v, l]) => (
+              <button type="button" data-theme-set={v} class="theme-btn font-mono text-xs uppercase px-3 py-1 rounded-full border border-border cursor-pointer">
+                {l}
+              </button>
+            ))}
+          </div>
           <p class="text-lead">
             Les tokens et les composants partagés par hien.design,
             feed.hien.design et cv.hien.design. Le squelette vit ici, le
@@ -65,27 +91,43 @@ const type = [
       <section class="page-grid">
         <div class="page-grid-content">
           <h2>Couleurs</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 border-t border-l border-border">
-            {colors.map((c) => (
-              <div class="border-r border-b border-border p-4 flex flex-col gap-3">
-                <div class={`${c.utility} aspect-video border border-border`}></div>
-                <div class="flex flex-col gap-1">
-                  <strong>{c.token}</strong>
-                  <span class="text-muted">{c.utility}</span>
-                  <p class="text-muted">{c.note}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div class="theme-dark bg-background text-foreground grid grid-cols-2 md:grid-cols-4 border-l border-border">
-            {colors.map((c) => (
-              <div class="border-r border-b border-border p-4 flex flex-col gap-3">
-                <div class={`${c.utility} aspect-video border border-border`}></div>
-                <span class="text-muted">.theme-dark {c.token}</span>
-              </div>
-            ))}
-          </div>
+          <p class="text-muted mb-8">
+            Toutes les couleurs sont en oklch. Le mode sombre s'active avec
+            data-theme="dark" (ou "auto" pour suivre le système) sur html :
+            les sites restent en clair tant qu'ils ne le demandent pas. En
+            sombre, le fond de page est noir pur.
+          </p>
         </div>
+      </section>
+
+      <section class="-mx-4">
+        <ul class="w-full border-y border-border divide-y divide-border">
+          <li class="hidden md:grid grid-cols-8 gap-4 py-4 px-4 text-muted">
+            <span class="col-span-1">Aperçu</span>
+            <span class="col-start-2 2xl:col-start-3 col-span-3 2xl:col-span-2">Token</span>
+            <span class="col-start-5 col-span-2">Clair</span>
+            <span class="col-start-7 col-span-2">Sombre</span>
+          </li>
+          {colors.map((c) => (
+            <li class="grid grid-cols-[25%_1fr] items-center gap-2 py-4 px-4 md:grid-cols-8 md:gap-4 md:py-8">
+              <div class="flex gap-1 md:col-start-1 md:col-span-1 md:row-start-1">
+                <span class="w-8 h-8 md:w-10 md:h-10 border border-[oklch(80%_0_0/0.5)] shrink-0" style={`background: ${light[c.token]}`} title="Clair"></span>
+                <span class="w-8 h-8 md:w-10 md:h-10 border border-[oklch(80%_0_0/0.5)] shrink-0" style={`background: ${dark[c.token]}`} title="Sombre"></span>
+              </div>
+              <div class="md:col-start-2 2xl:col-start-3 md:col-span-3 2xl:col-span-2">
+                <p>{c.token}</p>
+                <p class="text-muted">{c.note}</p>
+              </div>
+              <p class="col-start-2 md:col-start-5 md:col-span-2 font-mono text-sm font-light leading-relaxed">
+                <span class="md:hidden text-muted">Clair · </span>{light[c.token]}<br />
+                <span class="text-muted">{c.utility}</span>
+              </p>
+              <p class="col-start-2 md:col-start-7 md:col-span-2 font-mono text-sm font-light leading-relaxed">
+                <span class="md:hidden text-muted">Sombre · </span>{dark[c.token]}
+              </p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section class="page-grid">
@@ -243,5 +285,24 @@ const footer = await getEntry("footer-data", "index");
         { label: "hien.design", href: "https://hien.design" },
       ]}
     />
+    <script>
+      const sync = () => {
+        const current = document.documentElement.dataset.theme;
+        document.querySelectorAll<HTMLElement>("[data-theme-set]").forEach((b) => {
+          b.classList.toggle("bg-foreground", b.dataset.themeSet === current);
+          b.classList.toggle("text-background", b.dataset.themeSet === current);
+        });
+      };
+      document.querySelectorAll<HTMLElement>("[data-theme-set]").forEach((b) =>
+        b.addEventListener("click", () => {
+          document.documentElement.dataset.theme = b.dataset.themeSet;
+          try {
+            localStorage.setItem("hd-theme", b.dataset.themeSet ?? "auto");
+          } catch {}
+          sync();
+        }),
+      );
+      sync();
+    </script>
   </body>
 </html>

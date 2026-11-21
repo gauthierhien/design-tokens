@@ -8,9 +8,24 @@
  * utilities like text-h1 exist for @apply; media queries override them.
  *
  * @source: lets Tailwind see the classes used by the shared components.
+ *
+ * Dark mode is opt-in, so consuming sites stay light until they ask for it:
+ * <html data-theme="dark"> forces it, <html data-theme="auto"> follows the
+ * system setting. Tailwind's dark: variant follows the same rule.
  */
 
 @source "./components";
+
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="auto"], [data-theme="auto"] *) {
+      @slot;
+    }
+  }
+}
 
 @theme {
   --color-background: var(--background);
@@ -98,6 +113,35 @@
   }
 }
 
+/* Dark mode (whole page). Same palette as .theme-dark, but the page
+   background is pure black. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: oklch(0% 0 0);
+  --background-muted: oklch(14.5% 0 0);
+  --foreground: oklch(97% 0 0);
+  --foreground-muted: oklch(43.9% 0 0);
+  --accent: oklch(0.9402 0.205 113.88);
+  --accent-hover: oklch(0.5541 0.1539 40.04);
+  --border: oklch(26.9% 0 0);
+  --status: oklch(0.7227 0.192 149.58);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    color-scheme: dark;
+    --background: oklch(0% 0 0);
+    --background-muted: oklch(14.5% 0 0);
+    --foreground: oklch(97% 0 0);
+    --foreground-muted: oklch(43.9% 0 0);
+    --accent: oklch(0.9402 0.205 113.88);
+    --accent-hover: oklch(0.5541 0.1539 40.04);
+    --border: oklch(26.9% 0 0);
+    --status: oklch(0.7227 0.192 149.58);
+  }
+}
+
+/* Local inverted surface (footer band), independent of the page mode. */
 .theme-dark {
   --background: oklch(14.5% 0 0);
   --background-muted: oklch(20.5% 0 0);

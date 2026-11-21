@@ -21,6 +21,8 @@ Load **Geist** and **Geist Mono** in the consuming app (e.g. `@fontsource-variab
 
 Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the type scale (`text-h1` … `text-h4`, `text-body`, `text-body-prose`, `text-lead`, `text-label`) and the page grid (`page-grid`, `page-grid-content`, see DESIGN.md > Layout). For local inverted surfaces, wrap with `.theme-dark`.
 
+Dark mode (opt-in) : `<html data-theme="dark">` force le mode sombre, `data-theme="auto"` suit le système. Fond de page noir pur, variante Tailwind `dark:` disponible. Sans attribut, le site reste en clair.
+
 ## Composants partagés (Astro)
 
 Le squelette vit ici, le contenu vit dans le Keystatic de chaque site.

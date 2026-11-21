@@ -180,8 +180,8 @@ from each site's Keystatic). The rest is guidance: component CSS lives in each a
 - **Primary button** — `foreground` fill on `background` text; hover via opacity.
 - **Secondary button** — `background-muted` fill.
 - **Tag** — Mono uppercase; `foreground` on `background`.
-- **Header** — tagline (mono, top left) and logo (top right). No navigation.
-- **Footer** — `.theme-dark` band on a mesh shader, availability LED line (hidden when unavailable), H2, rounded CTA, credit with Paris time, links between sites.
+- **Header**: tagline (mono, top left) and logo (top right). No navigation.
+- **Footer**: `.theme-dark` band on a mesh shader, availability LED line (hidden when unavailable), H2, rounded CTA, credit with Paris time, links between sites.
 - Do not bake page modules (homepage Modules, Skills) into the brand: those stay app patterns.
 
 ## Do's and Don'ts

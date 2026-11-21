@@ -1,12 +1,16 @@
 /**
- * @hien/design-tokens — brand tokens
+ * @hien/design-tokens (repo hien-design-tokens): brand tokens
  * Consume in Tailwind v4 apps via: @import "@hien/design-tokens/theme.css";
  * Fonts must be loaded by the consuming app (e.g. @fontsource-variable/geist).
  *
  * Type scale matches portfolio-2026 (Tailwind default breakpoints:
  * md 768, lg 1024, xl 1280, 2xl 1536). Sizes are literals in @theme so
  * utilities like text-h1 exist for @apply; media queries override them.
+ *
+ * @source: lets Tailwind see the classes used by the shared components.
  */
+
+@source "./components";
 
 @theme {
   --color-background: var(--background);

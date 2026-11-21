@@ -1,0 +1,52 @@
+// Singletons Keystatic partagés par les sites de la galaxie hien.design.
+// Chaque site les ajoute à son keystatic.config.ts :
+//   singletons: { header: headerSingleton, footer: footerSingleton }
+// Les fichiers restent dans chaque site (src/content/header-data et footer-data).
+import { fields, singleton } from "@keystatic/core";
+
+export const headerSingleton = singleton({
+  label: "Header",
+  path: "src/content/header-data/index",
+  schema: {
+    logo: fields.image({
+      label: "Logo",
+      directory: "src/assets/header",
+      publicPath: "../../assets/header/",
+    }),
+    logoAlt: fields.text({
+      label: "Logo Alt Text (for accessibility and SEO)",
+    }),
+    tagline: fields.text({
+      label: "Tagline (replaces the navigation)",
+      defaultValue: "Design Engineer",
+    }),
+  },
+});
+
+export const footerSingleton = singleton({
+  label: "Footer",
+  path: "src/content/footer-data/index",
+  schema: {
+    availabilityLabel: fields.text({
+      label: "Availability Label",
+      defaultValue: "Available for freelance work",
+    }),
+    isAvailable: fields.checkbox({
+      label: "Available (green LED; if unchecked, the availability line is hidden)",
+      defaultValue: true,
+    }),
+    heading: fields.text({ label: "Heading (H2)" }),
+    ctaLabel: fields.text({ label: "CTA Button Label" }),
+    ctaEmail: fields.text({ label: "CTA Button Email" }),
+    navLinks: fields.array(
+      fields.object({
+        label: fields.text({ label: "Link Label" }),
+        href: fields.text({ label: "Link URL" }),
+      }),
+      {
+        label: "Navigation Links",
+        itemLabel: (props) => props.fields.label.value || "Link",
+      },
+    ),
+  },
+});

@@ -116,10 +116,11 @@ A vivid lime/chartreuse accent pairs with a terracotta/orange hover. All colors 
 expressed exclusively in `oklch`. There is no site-wide dark mode: `.theme-dark` is
 applied locally (e.g. a footer band), not as a global theme toggle.
 
-This package ships **runtime tokens only** (`theme.css`): colors, font *names*, and
-the type scale (portfolio breakpoint ladder). Spacing, radii, buttons, layout,
-and Header/Footer stay in each app — they are documented here as guidance, not
-exported CSS.
+This package ships **runtime tokens** (`theme.css`): colors, font *names*, and
+the type scale (portfolio breakpoint ladder), plus the **shared Header and
+Footer** Astro components of the hien.design sites (`components/`). Their
+content comes from each site's Keystatic. Spacing, radii, buttons and layout
+utilities stay in each app and are documented here as guidance.
 
 ## Colors
 
@@ -173,12 +174,15 @@ minimal radius. Lucide icons: `stroke-width={1}`, colors via CSS vars
 
 ## Components
 
-Guidance only — component CSS lives in each app, not in this package.
+Header and Footer ship as Astro components (skeleton here, content via props
+from each site's Keystatic). The rest is guidance: component CSS lives in each app.
 
 - **Primary button** — `foreground` fill on `background` text; hover via opacity.
 - **Secondary button** — `background-muted` fill.
 - **Tag** — Mono uppercase; `foreground` on `background`.
-- Do not bake portfolio Header/Footer/Modules into the brand — those are app patterns.
+- **Header**: tagline (mono, top left) and logo (top right). No navigation.
+- **Footer**: `.theme-dark` band on a mesh shader, availability LED line (hidden when unavailable), H2, rounded CTA, credit with Paris time, links between sites.
+- Do not bake page modules (homepage Modules, Skills) into the brand: those stay app patterns.
 
 ## Do's and Don'ts
 
@@ -192,5 +196,5 @@ Guidance only — component CSS lives in each app, not in this package.
 
 - Invent a purple/indigo palette, generic cream + terracotta look, or dense broadsheet layout.
 - Ship global dark mode, glows, multi-shadows, or UI emojis.
-- Put content images, font files, layout utilities, or component CSS in this package.
+- Put content images, font files, layout utilities, or page-specific component CSS in this package.
 - Hardcode duplicate tokens in apps once this package is wired (including LED green as `#22c55e`).

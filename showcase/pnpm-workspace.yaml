@@ -1,0 +1,6 @@
+# esbuild et sharp fournissent des binaires précompilés : leurs scripts
+# d'installation sont inutiles. `false` = ne pas les exécuter, sans erreur
+# « Ignored build scripts » (pnpm >= 11).
+allowBuilds:
+  esbuild: false
+  sharp: false

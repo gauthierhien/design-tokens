@@ -1,0 +1,159 @@
+---
+/**
+ * Visionneuse plein écran (Swiper). Un élément [data-lightbox-open={id}]
+ * avec data-lightbox-index l'ouvre sur l'image voulue ; ImageWide,
+ * ImageSquare et SectionImageGrid posent ces attributs avec leur prop
+ * lightbox. Échap ferme, flèches du clavier pour naviguer.
+ */
+import { Image } from "astro:assets";
+import { ChevronLeft, ChevronRight, X } from "@lucide/astro";
+import type { ImageMetadata } from "astro";
+import "swiper/css";
+
+export interface Props {
+  id: string;
+  images: { src: ImageMetadata; alt: string }[];
+}
+
+const { id, images } = Astro.props;
+---
+
+<div
+  data-lightbox={id}
+  class="fixed inset-0 z-50 bg-background flex-col hidden"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="lightbox-swiper swiper" data-lightbox-swiper>
+    <div class="swiper-wrapper">
+      {images.map((item) => (
+        <div class="swiper-slide">
+          <Image src={item.src} alt={item.alt} />
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="flex items-center justify-center gap-6 py-6 shrink-0">
+    <button
+      data-lightbox-prev
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-background-muted cursor-pointer hover:opacity-70 transition-opacity"
+      aria-label="Previous image"
+    >
+      <ChevronLeft size={24} stroke-width={1} />
+    </button>
+    <button
+      data-lightbox-close
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-background-muted cursor-pointer hover:opacity-70 transition-opacity"
+      aria-label="Close"
+    >
+      <X size={24} stroke-width={1} />
+    </button>
+    <button
+      data-lightbox-next
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-background-muted cursor-pointer hover:opacity-70 transition-opacity"
+      aria-label="Next image"
+    >
+      <ChevronRight size={24} stroke-width={1} />
+    </button>
+  </div>
+</div>
+
+<script>
+  import Swiper from "swiper";
+  import { Navigation } from "swiper/modules";
+
+  document.querySelectorAll<HTMLElement>("[data-lightbox]").forEach((modal) => {
+    const id = modal.dataset.lightbox!;
+    const prevEl = modal.querySelector<HTMLElement>("[data-lightbox-prev]")!;
+    const nextEl = modal.querySelector<HTMLElement>("[data-lightbox-next]")!;
+    const closeEl = modal.querySelector<HTMLElement>("[data-lightbox-close]")!;
+    const swiperEl = modal.querySelector<HTMLElement>(
+      "[data-lightbox-swiper]",
+    )!;
+
+    const swiper = new Swiper(swiperEl, {
+      modules: [Navigation],
+      slidesPerView: 1,
+      speed: 700,
+      cssMode: false,
+      navigation: { prevEl, nextEl },
+    });
+
+    function openLightbox(index: number) {
+      swiper.slideTo(index, 0);
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.style.overflow = "";
+    }
+
+    // Listen for trigger clicks
+    document
+      .querySelectorAll<HTMLElement>(`[data-lightbox-open="${id}"]`)
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const index = parseInt(btn.dataset.lightboxIndex ?? "0", 10);
+          openLightbox(index);
+        });
+      });
+
+    closeEl.addEventListener("click", closeLightbox);
+
+    // Keyboard navigation (only for the currently visible lightbox)
+    document.addEventListener("keydown", (e) => {
+      if (!modal.classList.contains("hidden")) {
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowLeft") swiper.slidePrev();
+        if (e.key === "ArrowRight") swiper.slideNext();
+      }
+    });
+  });
+</script>
+
+<style>
+  [data-lightbox] {
+    height: 100dvh;
+  }
+
+  .lightbox-swiper {
+    width: 100%;
+    height: calc(100dvh - 88px);
+  }
+
+  .lightbox-swiper .swiper-wrapper {
+    height: 100%;
+  }
+
+  .lightbox-swiper .swiper-slide {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .lightbox-swiper .swiper-slide img {
+    width: auto !important;
+    height: auto !important;
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+  }
+
+  [data-lightbox-prev]:disabled,
+  [data-lightbox-next]:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Swiper adds this class */
+  :global(.swiper-button-disabled) {
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+  }
+</style>

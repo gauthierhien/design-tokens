@@ -54,10 +54,16 @@ Autres composants (v1.4.0) :
 
 | Import | Rôle | Props principales |
 | --- | --- | --- |
-| `Button.astro` | Bouton pilule pleine largeur, pastille flèche | `href`, `label`, `hoverLabel`, `variant` (`outline`, `overlay`), `size` (`md`, `lg`), `target`, `meshTrigger` |
+| `Button.astro` | Bouton pilule pleine largeur, pastille flèche | `href`, `label`, `hoverLabel`, `variant` (`outline`, `overlay`, `compact`), `icon` (`arrow`, `plus`), `size` (`md`, `lg`), `target`, `meshTrigger` |
 | `Tag.astro` | Badge mono en capitales | slot, `class` (défaut `mb-4`) |
-| `Thumbnail.astro` | Vignette d'image sur fond muted | `image`, `alt`, `aspect` (`square`, `video`, `wide`), `padding` (`15%`, `3rem`, `none`), `href` |
-| `Carousel.astro` | Carrousel Swiper avec en-tête et flèches | `items` (`image`, `title`, `link`), `tag`, `heading`, `body` |
+| `ImageWide.astro` | Image large (carrée sur mobile, 16:9 dès md), légende et lien optionnels, ou Lightbox | `image`, `alt`, `caption`, `href`, `target`, `fit` (`contain`, `cover`), `padding`, `responsive`, `lightbox` |
+| `ImageSquare.astro` | Image carrée, légende et lien optionnels, ou Lightbox | mêmes props qu'ImageWide |
+| `SectionHeader.astro` | En-tête de section : badge, titre, texte (tous optionnels), slot `aside` | `tag`, `heading`, `body`, `bleed` |
+| `SectionImageWide.astro` | Section image large + en-tête dessus ou dessous (Module A) | `image`, `fit`, `caption`, `href`, `tag`, `heading`, `body`, `headerPosition` |
+| `SectionImageGrid.astro` | Section grille d'images (1 image : large ; sinon carrés), visionneuse, pilule « + » (Modules B et D, médias du feed) | `items` (images ou `{ image, caption, href }`), `columns`, `lightbox`, `cta`, `tag`, `heading`, `body` |
+| `Lightbox.astro` | Visionneuse plein écran | `id`, `images` |
+| `Thumbnail.astro` | Vignette d'image sur fond muted (brique de base) | `image`, `alt`, `aspect` (`square`, `video`, `wide`), `padding` (`15%`, `3rem`, `none`), `href` |
+| `Carousel.astro` | Section carrousel Swiper : SectionHeader + flèches, slides en ImageWide | `items` (`image`, `title`, `link`), `tag`, `heading`, `body` |
 | `MeshBackground.astro` | Fond animé (shader mesh, grain), sombre ou clair | `tone` (`dark`, `light`), `pose` (0 à 2), `fixed`, `blackGrain` ; parent `[data-mesh-root]`, déclencheurs `[data-mesh-trigger]` (la racine peut l'être elle-même) |
 
 Le Footer utilise `MeshBackground` et `Button` ; `meshFixed` fixe son fond au viewport (apps.hien.design).

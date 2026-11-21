@@ -8,6 +8,10 @@ import Button from "@hien/design-tokens/Button.astro";
 import Tag from "@hien/design-tokens/Tag.astro";
 import Thumbnail from "@hien/design-tokens/Thumbnail.astro";
 import Carousel from "@hien/design-tokens/Carousel.astro";
+import ImageWide from "@hien/design-tokens/ImageWide.astro";
+import ImageSquare from "@hien/design-tokens/ImageSquare.astro";
+import SectionImageWide from "@hien/design-tokens/SectionImageWide.astro";
+import SectionImageGrid from "@hien/design-tokens/SectionImageGrid.astro";
 import MeshBackground from "@hien/design-tokens/MeshBackground.astro";
 import { Image } from "astro:assets";
 import pkg from "@hien/design-tokens/package.json";
@@ -227,6 +231,21 @@ const type = [
           </div>
 
           <div class="flex flex-col gap-4">
+            <span class="text-muted">ImageWide · carrée sur mobile, 16:9 dès md · sans légende</span>
+            <ImageWide image={app1} alt="Capture d'app" />
+            <span class="text-muted">ImageWide · légende et lien (flèche ↗)</span>
+            <ImageWide image={app2} alt="Picky" caption="Picky" href="https://apps.hien.design" padding="3rem" />
+            <span class="text-muted">ImageWide · cover, 16:9 partout (responsive=false), légende sans lien</span>
+            <ImageWide image={hero} alt="" fit="cover" responsive={false} caption="Sonepar, assistant vocal" />
+            <span class="text-muted">ImageSquare · sans légende, avec légende, avec légende et lien</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-1">
+              <ImageSquare image={app1} alt="Countdowns" />
+              <ImageSquare image={app2} alt="Picky" caption="Picky" />
+              <ImageSquare image={app1} alt="Countdowns" caption="Countdowns" href="https://apps.hien.design" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4">
             <span class="text-muted">MeshBackground · fond animé sombre (shader mesh, grain), réagit au bouton</span>
             <div class="relative aspect-video overflow-hidden theme-dark text-foreground" data-mesh-root>
               <MeshBackground />
@@ -234,16 +253,12 @@ const type = [
                 <Button href="https://apps.hien.design" label="Survole-moi" variant="outline" meshTrigger />
               </div>
             </div>
-            <span class="text-muted">MeshBackground tone="light" · cartes Skills du CV, survole une carte</span>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {["Product Concepting", "Product & System Design", "Build & Ship"].map((t, i) => (
-                <div class="relative aspect-[3/4] overflow-hidden border border-border" data-mesh-root data-mesh-trigger>
-                  <MeshBackground tone="light" pose={i} />
-                  <div class="relative z-10 h-full flex flex-col justify-end p-4 lg:p-6">
-                    <h3>{t}</h3>
-                  </div>
-                </div>
-              ))}
+            <span class="text-muted">MeshBackground tone="light" · fond animé clair (cartes Skills du CV), réagit au bouton</span>
+            <div class="relative aspect-video overflow-hidden" data-mesh-root>
+              <MeshBackground tone="light" />
+              <div class="relative z-10 h-full flex items-center justify-center p-4 md:p-16">
+                <Button href="https://cv.hien.design" label="Survole-moi" meshTrigger />
+              </div>
             </div>
             <p class="text-muted">
               Sur apps.hien.design, le même fond est fixé au viewport
@@ -277,6 +292,43 @@ const footer = await getEntry("footer-data", "index");
       ]}
     />
 
+    <div class="flex flex-col gap-24 md:gap-48 pb-32">
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageWide · image large, en-tête dessous (Module A)</span></div>
+      <SectionImageWide
+        image={hero}
+        tag="Currently"
+        heading="I help Sonepar build an AI-native product experience"
+        body="L'en-tête est optionnel : badge, titre et texte s'affichent seulement s'ils sont renseignés."
+      />
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageWide · en-tête dessus, image entière (contain), légende</span></div>
+      <SectionImageWide image={app2} fit="contain" heading="Picky" headerPosition="before" caption="Color picker pour Mac" />
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageWide · sans titre</span></div>
+      <SectionImageWide image={hero} />
+
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageGrid · plusieurs images carrées, visionneuse au clic (Module B)</span></div>
+      <SectionImageGrid
+        tag="Side-projects"
+        heading="Images carrées"
+        body="Une image seule passe en image large. Clique une image pour ouvrir la visionneuse."
+        items={[app1, app2]}
+        lightbox
+      />
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageGrid · une seule image, sans titre</span></div>
+      <SectionImageGrid items={[app1]} />
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageGrid · 3 colonnes, légendes et liens</span></div>
+      <SectionImageGrid
+        heading="Trois colonnes"
+        columns={3}
+        items={[
+          { image: app1, caption: "Countdowns", href: "https://apps.hien.design" },
+          { image: app2, caption: "Picky", href: "https://apps.hien.design" },
+          { image: app1, caption: "Boring Countdown" },
+        ]}
+      />
+      <div class="page-grid px-4"><span class="page-grid-content text-muted">SectionImageGrid · pilule « + » sur dégradé (Module D)</span></div>
+      <SectionImageGrid items={[app1, app2, app2, app1]} cta={{ label: "See all projects", href: "https://feed.hien.design" }} />
+    </div>
+
     <Footer
       currentSite="home"
       heading="What will we ship together?"
@@ -286,6 +338,8 @@ const footer = await getEntry("footer-data", "index");
       ]}
     />
     <script>
+      import { mountMesh } from "@hien/design-tokens/mesh";
+
       const sync = () => {
         const current = document.documentElement.dataset.theme;
         document.querySelectorAll<HTMLElement>("[data-theme-set]").forEach((b) => {
@@ -300,6 +354,8 @@ const footer = await getEntry("footer-data", "index");
             localStorage.setItem("hd-theme", b.dataset.themeSet ?? "auto");
           } catch {}
           sync();
+          // Les couleurs du mesh clair suivent le fond de page.
+          mountMesh();
         }),
       );
       sync();

@@ -1,0 +1,76 @@
+---
+/**
+ * Base commune d'ImageWide et ImageSquare : une vignette (Thumbnail), une
+ * légende optionnelle en mono dessous, et au choix un lien (toute la figure
+ * est cliquable, flèche ↗ à droite de la légende) ou l'ouverture d'une
+ * Lightbox. Préférer ImageWide / ImageSquare dans les sites.
+ */
+import { ArrowUpRight } from "@lucide/astro";
+import type { ImageMetadata } from "astro";
+import Thumbnail from "./Thumbnail.astro";
+
+export interface Props {
+  image: ImageMetadata;
+  alt?: string | null;
+  aspect: "square" | "video" | "wide";
+  /** contain : image entière avec de l'air autour ; cover : remplit le cadre. */
+  fit?: "contain" | "cover";
+  /** Air autour de l'image en contain. */
+  padding?: "15%" | "3rem";
+  caption?: string | null;
+  href?: string | null;
+  /** Par défaut : nouvel onglet pour les liens http. */
+  target?: string;
+  /** Ouvre la Lightbox `id` sur l'image `index` (ignoré s'il y a un lien). */
+  lightbox?: { id: string; index: number } | null;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  image,
+  alt,
+  aspect,
+  fit = "contain",
+  padding = "15%",
+  caption,
+  href,
+  target,
+  lightbox,
+  sizes,
+  class: extraClass,
+} = Astro.props;
+
+const label = alt || caption || "";
+const resolvedTarget = target ?? (href && /^https?:\/\//.test(href) ? "_blank" : undefined);
+const Wrapper = href ? "a" : lightbox ? "button" : "div";
+---
+
+<figure class:list={["hd-media flex flex-col m-0", extraClass]}>
+  <Wrapper
+    class:list={["block w-full text-left", (href || lightbox) && "cursor-pointer"]}
+    href={href || undefined}
+    target={href ? resolvedTarget : undefined}
+    rel={href && resolvedTarget === "_blank" ? "noopener noreferrer" : undefined}
+    type={Wrapper === "button" ? "button" : undefined}
+    data-lightbox-open={!href && lightbox ? lightbox.id : undefined}
+    data-lightbox-index={!href && lightbox ? lightbox.index : undefined}
+    aria-label={(href || lightbox) && label ? `Open ${label}` : undefined}
+  >
+    <Thumbnail
+      image={image}
+      alt={label}
+      aspect={aspect}
+      padding={fit === "cover" ? "none" : padding}
+      sizes={sizes}
+    />
+    {
+      (caption || href) && (
+        <span class="flex flex-row w-full justify-between items-center mt-4">
+          {caption ? <span>{caption}</span> : <span />}
+          {href && <ArrowUpRight size={24} stroke-width={1} />}
+        </span>
+      )
+    }
+  </Wrapper>
+</figure>

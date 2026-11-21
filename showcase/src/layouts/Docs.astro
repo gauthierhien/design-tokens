@@ -1,0 +1,181 @@
+---
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+import "../styles.css";
+import pkg from "@hien/design-tokens/package.json";
+import { nav, pages } from "../nav";
+
+export interface Props {
+  title: string;
+  lead?: string;
+}
+
+const { title, lead } = Astro.props;
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) => (href === "/" ? path === "/" : path === href);
+const index = pages.findIndex((page) => isActive(page.href));
+const prev = index > 0 ? pages[index - 1] : null;
+const next = index >= 0 && index < pages.length - 1 ? pages[index + 1] : null;
+const modes = [
+  ["auto", "Système"],
+  ["light", "Clair"],
+  ["dark", "Sombre"],
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title === "hien.design.tokens" ? title : `${title} · hien.design.tokens`}</title>
+    <script is:inline>
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem("hd-theme") || "auto";
+      } catch {
+        document.documentElement.dataset.theme = "auto";
+      }
+    </script>
+  </head>
+  <body class="min-h-screen">
+    <header class="sticky top-0 z-40 h-16 flex items-stretch border-b border-border bg-background">
+      <a href="/" class="flex items-center gap-3 px-4 md:w-64 md:shrink-0 md:border-r md:border-border">
+        <img src="/gauthier-hien-logo.svg" alt="" class="w-20 h-auto dark:invert" />
+        <strong class="whitespace-nowrap">Design system</strong>
+      </a>
+      <div class="flex-1 flex items-center justify-end md:justify-between gap-4 px-4 md:px-8">
+        <span class="hidden md:inline text-muted">@hien/design-tokens v{pkg.version}</span>
+        <div class="hidden md:flex items-center gap-1 rounded-full border border-border p-1" role="group" aria-label="Mode">
+          {
+            modes.map(([value, label]) => (
+              <button
+                type="button"
+                data-theme-set={value}
+                class="font-mono text-xs uppercase px-3 py-1 rounded-full cursor-pointer"
+              >
+                {label}
+              </button>
+            ))
+          }
+        </div>
+        <details class="md:hidden relative">
+          <summary class="list-none cursor-pointer font-mono text-xs uppercase px-3 py-2 rounded-full border border-border">Menu</summary>
+          <nav class="fixed left-0 right-0 top-16 bottom-0 z-40 overflow-y-auto bg-background border-t border-border p-4">
+            <div class="flex items-center gap-1 rounded-full border border-border p-1 mb-8 w-fit" role="group" aria-label="Mode">
+              {
+                modes.map(([value, label]) => (
+                  <button
+                    type="button"
+                    data-theme-set={value}
+                    class="font-mono text-xs uppercase px-3 py-1 rounded-full cursor-pointer"
+                  >
+                    {label}
+                  </button>
+                ))
+              }
+            </div>
+            {
+              nav.map((group) => (
+                <div class="mb-8">
+                  <p class="mb-2">{group.title}</p>
+                  {group.items.map((item) => (
+                    <a href={item.href} class:list={["block py-2 text-muted", isActive(item.href) && "!text-foreground"]}>
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              ))
+            }
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <div class="flex">
+      <aside class="hidden md:block w-64 shrink-0 border-r border-border">
+        <nav class="sticky top-16 max-h-[calc(100vh-4rem)] overflow-y-auto py-8 px-4" aria-label="Design system">
+          {
+            nav.map((group) => (
+              <div class="mb-8">
+                <p class="px-3 mb-2">{group.title}</p>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        aria-current={isActive(item.href) ? "page" : undefined}
+                        class:list={[
+                          "block rounded-md px-3 py-2 transition-colors",
+                          isActive(item.href)
+                            ? "bg-background-muted text-foreground"
+                            : "text-muted hover:text-foreground",
+                        ]}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </nav>
+      </aside>
+
+      <main class="flex-1 min-w-0">
+        <div class="px-4 md:px-8 pt-12 pb-12 md:pt-20 md:pb-16 border-b border-border">
+          <h1>{title}</h1>
+          {lead && <p class="text-lead text-muted max-w-3xl mt-4">{lead}</p>}
+        </div>
+        <slot />
+        <nav class="grid grid-cols-2 border-b border-border" aria-label="Pages">
+          {
+            prev ? (
+              <a href={prev.href} class="p-4 md:p-8 border-r border-border hover:bg-background-muted">
+                <span class="text-muted">Précédent</span>
+                <p>{prev.label}</p>
+              </a>
+            ) : (
+              <span class="border-r border-border" />
+            )
+          }
+          {
+            next && (
+              <a href={next.href} class="p-4 md:p-8 text-right hover:bg-background-muted">
+                <span class="text-muted">Suivant</span>
+                <p>{next.label}</p>
+              </a>
+            )
+          }
+        </nav>
+      </main>
+    </div>
+
+    <script>
+      import { mountMesh } from "@hien/design-tokens/mesh";
+
+      const sync = () => {
+        const current = document.documentElement.dataset.theme;
+        document.querySelectorAll<HTMLElement>("[data-theme-set]").forEach((b) => {
+          const on = b.dataset.themeSet === current;
+          b.classList.toggle("bg-foreground", on);
+          b.classList.toggle("text-background", on);
+        });
+      };
+      document.querySelectorAll<HTMLElement>("[data-theme-set]").forEach((b) =>
+        b.addEventListener("click", () => {
+          document.documentElement.dataset.theme = b.dataset.themeSet;
+          try {
+            localStorage.setItem("hd-theme", b.dataset.themeSet ?? "auto");
+          } catch {}
+          sync();
+          // Les couleurs du mesh clair suivent le fond de page.
+          mountMesh();
+        }),
+      );
+      sync();
+    </script>
+  </body>
+</html>

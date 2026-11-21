@@ -1,0 +1,34 @@
+---
+import Docs from "../layouts/Docs.astro";
+import Demo from "../components/Demo.astro";
+import Carousel from "@hien/design-tokens/Carousel.astro";
+import app1 from "../assets/app-1.png";
+import app2 from "../assets/app-2.png";
+---
+
+<Docs
+  title="Carrousel"
+  lead="Swiper, en-tête avec flèches précédent et suivant dès md, slides en images larges qui débordent de la grille. Une slide sur deux est décalée en 2xl. Pensé pour la pleine largeur de page."
+>
+  <Demo
+    label="Carousel · avec badge, titre et texte (Module C)"
+    bleed
+    code={`<Carousel tag="Side-projects" heading="…" body="…"
+  items={[{ image, title: "Countdowns", link: "https://…" }, …]} />`}
+  >
+    <Carousel
+      tag="Side-projects"
+      heading="In my spare time, I have fun building my own ideas"
+      body="Like the ultimate screenshot tool I hope to launch this year."
+      items={[
+        { image: app1, title: "Countdowns" },
+        { image: app2, title: "Picky", link: "https://apps.hien.design" },
+        { image: app1, title: "Boring Countdown" },
+        { image: app2, title: "Hey Calendar" },
+      ]}
+    />
+  </Demo>
+  <Demo label="Carousel · sans en-tête" bleed code={`<Carousel items={[…]} />`}>
+    <Carousel items={[{ image: app2 }, { image: app1 }, { image: app2 }]} />
+  </Demo>
+</Docs>

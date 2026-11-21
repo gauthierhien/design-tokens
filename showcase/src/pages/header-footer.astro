@@ -1,0 +1,60 @@
+---
+import Docs from "../layouts/Docs.astro";
+import Demo from "../components/Demo.astro";
+import Header from "@hien/design-tokens/Header.astro";
+import Footer from "@hien/design-tokens/Footer.astro";
+---
+
+<Docs
+  title="Header et Footer"
+  lead="Le même squelette sur les quatre sites. Chaque site ne fait que lire son Keystatic (singletons Header et Footer, fournis par le package) et passer le contenu en props."
+>
+  <Demo
+    label="Header · tagline et logo"
+    bleed
+    code={`---
+import { getEntry } from "astro:content";
+import Header from "@hien/design-tokens/Header.astro";
+const header = await getEntry("header-data", "index");
+---
+<Header currentSite="feed" tagline={header?.data?.tagline} />`}
+  >
+    <div class="border-y border-border overflow-hidden">
+      <Header currentSite="home" tagline="Design Engineer" />
+    </div>
+  </Demo>
+  <Demo
+    label="Footer · hien.design, feed et cv (navigation entre les sites, heure de Paris)"
+    bleed
+    code={`<Footer currentSite="feed" {...footer?.data} />`}
+  >
+    <Footer
+      currentSite="home"
+      heading="What will we ship together?"
+      navLinks={[
+        { label: "GitHub", href: "https://github.com/gauthierhien/hien-design-tokens" },
+        { label: "hien.design", href: "https://hien.design" },
+      ]}
+    />
+  </Demo>
+  <section class="px-4 md:px-8 py-12 border-b border-border">
+    <h3 class="mb-6">Options</h3>
+    <ul class="divide-y divide-border border-y border-border">
+      {
+        [
+          ["currentSite", "home, feed ou cv : lien du logo et navigation entre les sites."],
+          ["heading", "Un « ? » coupe le titre, la suite passe en gris sur une 2e ligne."],
+          ["ctaEmail, ctaHref", "Adresse du bouton ; le survol affiche l'adresse email."],
+          ["isAvailable", "Décoché : la ligne de disponibilité est masquée."],
+          ["showSiteNav, homeLink, externalInNewTab, showTime", "Structure de la navigation (apps : pas de navigation entre sites, lien Home, pas d'heure)."],
+          ["meshFixed", "Le fond animé couvre tout le viewport (apps)."],
+        ].map(([k, v]) => (
+          <li class="grid grid-cols-1 md:grid-cols-8 gap-2 md:gap-4 py-4">
+            <span class="md:col-span-3">{k}</span>
+            <p class="md:col-span-5 text-muted">{v}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Docs>

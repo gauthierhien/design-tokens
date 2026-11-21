@@ -1,0 +1,25 @@
+---
+// Un exemple de la vitrine : libellé, aperçu, et code d'usage optionnel.
+export interface Props {
+  label: string;
+  code?: string;
+  /** L'aperçu occupe toute la largeur du contenu, sans marge. */
+  bleed?: boolean;
+}
+
+const { label, code, bleed = false } = Astro.props;
+---
+
+<div class="flex flex-col border-b border-border">
+  <div class="px-4 md:px-8 pt-8 pb-4">
+    <span class="text-muted">{label}</span>
+  </div>
+  <div class:list={["pb-8", !bleed && "px-4 md:px-8"]}>
+    <slot />
+  </div>
+  {
+    code && (
+      <pre class="mx-4 md:mx-8 mb-8 bg-background-muted p-4 overflow-x-auto font-mono text-xs leading-relaxed"><code>{code}</code></pre>
+    )
+  }
+</div>

@@ -1,0 +1,50 @@
+---
+import Docs from "../layouts/Docs.astro";
+import Demo from "../components/Demo.astro";
+import SectionHeader from "@hien/design-tokens/SectionHeader.astro";
+import SectionImageWide from "@hien/design-tokens/SectionImageWide.astro";
+import SectionImageGrid from "@hien/design-tokens/SectionImageGrid.astro";
+import app1 from "../assets/app-1.png";
+import app2 from "../assets/app-2.png";
+import hero from "../assets/hero.jpg";
+---
+
+<Docs
+  title="Sections"
+  lead="Les blocs de page des sites : un en-tête (badge, titre, texte, tous optionnels) combiné à une image large ou à une grille d'images. L'espacement vertical entre sections reste au site."
+>
+  <Demo label="SectionHeader · badge, titre, texte" bleed code={`<SectionHeader tag="Currently" heading="…" body="…" />`}>
+    <div class="px-4">
+      <SectionHeader tag="Currently" heading="I help Sonepar build an AI-native product experience" body="Chaque partie est optionnelle." />
+    </div>
+  </Demo>
+  <Demo label="SectionImageWide · image large, en-tête dessous (Module A)" bleed code={`<SectionImageWide image={img} tag="Currently" heading="…" body="…" />`}>
+    <SectionImageWide image={hero} tag="Currently" heading="I help Sonepar build an AI-native product experience" body="L'en-tête s'affiche seulement s'il est renseigné." />
+  </Demo>
+  <Demo label="SectionImageWide · en-tête dessus, image entière (contain), légende" bleed code={`<SectionImageWide image={img} fit="contain" heading="Picky" headerPosition="before" caption="…" />`}>
+    <SectionImageWide image={app2} fit="contain" heading="Picky" headerPosition="before" caption="Color picker pour Mac" />
+  </Demo>
+  <Demo label="SectionImageWide · sans titre" bleed code={`<SectionImageWide image={img} />`}>
+    <SectionImageWide image={hero} />
+  </Demo>
+  <Demo label="SectionImageGrid · plusieurs images carrées, visionneuse au clic (Module B)" bleed code={`<SectionImageGrid tag="…" heading="…" body="…" items={[img1, img2]} lightbox />`}>
+    <SectionImageGrid tag="Side-projects" heading="Images carrées" body="Une image seule passe en image large." items={[app1, app2]} lightbox />
+  </Demo>
+  <Demo label="SectionImageGrid · une seule image, sans titre" bleed code={`<SectionImageGrid items={[img]} />`}>
+    <SectionImageGrid items={[app1]} />
+  </Demo>
+  <Demo label="SectionImageGrid · 3 colonnes, légendes et liens" bleed code={`<SectionImageGrid heading="…" columns={3} items={[{ image, caption, href }, …]} />`}>
+    <SectionImageGrid
+      heading="Trois colonnes"
+      columns={3}
+      items={[
+        { image: app1, caption: "Countdowns", href: "https://apps.hien.design" },
+        { image: app2, caption: "Picky", href: "https://apps.hien.design" },
+        { image: app1, caption: "Boring Countdown" },
+      ]}
+    />
+  </Demo>
+  <Demo label="SectionImageGrid · pilule « + » sur dégradé (Module D)" bleed code={`<SectionImageGrid items={[…]} cta={{ label: "See all projects", href: "…" }} />`}>
+    <SectionImageGrid items={[app1, app2, app2, app1]} cta={{ label: "See all projects", href: "https://feed.hien.design" }} />
+  </Demo>
+</Docs>

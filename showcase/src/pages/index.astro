@@ -185,12 +185,23 @@ const type = [
           </div>
 
           <div class="flex flex-col gap-4">
-            <span class="text-muted">MeshBackground · fond animé (shader mesh, grain), réagit au bouton</span>
+            <span class="text-muted">MeshBackground · fond animé sombre (shader mesh, grain), réagit au bouton</span>
             <div class="relative aspect-video overflow-hidden theme-dark text-foreground" data-mesh-root>
               <MeshBackground />
               <div class="relative z-10 h-full flex items-center justify-center p-4 md:p-16">
                 <Button href="https://apps.hien.design" label="Survole-moi" variant="outline" meshTrigger />
               </div>
+            </div>
+            <span class="text-muted">MeshBackground tone="light" · cartes Skills du CV, survole une carte</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {["Product Concepting", "Product & System Design", "Build & Ship"].map((t, i) => (
+                <div class="relative aspect-[3/4] overflow-hidden border border-border" data-mesh-root data-mesh-trigger>
+                  <MeshBackground tone="light" pose={i} />
+                  <div class="relative z-10 h-full flex flex-col justify-end p-4 lg:p-6">
+                    <h3>{t}</h3>
+                  </div>
+                </div>
+              ))}
             </div>
             <p class="text-muted">
               Sur apps.hien.design, le même fond est fixé au viewport

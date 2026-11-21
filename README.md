@@ -44,8 +44,8 @@ const footer = await getEntry("footer-data", "index");
 ```
 
 - `currentSite` (`home`, `feed`, `cv`) : le logo et la navigation entre sites pointent en relatif vers le site courant, en absolu vers les autres (`@hien/design-tokens/sites`).
-- Header : `tagline`, `logoSrc` (défaut `/gauthier-hien-logo.svg`, servi par le site), `logoAlt`.
-- Footer : `availabilityLabel`, `isAvailable` (décoché : ligne masquée), `heading`, `ctaLabel`, `ctaEmail`, `navLinks`, `credit`.
+- Header : `tagline`, `logo` (image du CMS) ou `logoSrc` (défaut `/gauthier-hien-logo.svg`), `logoAlt`, `logoHref`.
+- Footer : `availabilityLabel`, `isAvailable` (décoché : ligne masquée), `heading` (un « ? » coupe le titre, la suite passe en gris), `ctaLabel`, `ctaEmail` ou `ctaHref`, `navLinks`, `credit`. Options de structure : `showSiteNav` (navigation News, Work, About), `homeLink` (lien Home en tête), `externalInNewTab`, `showTime` (heure de Paris), `meshFixed` (fond fixé au viewport). Les liens relatifs vers la page courante sont masqués.
 - Peer dependencies côté site : `astro`, `@keystatic/core`, `@lucide/astro`, `@paper-design/shaders`, `swiper` (pour le Carousel).
 
 Autres composants (v1.4.0) :
@@ -56,7 +56,7 @@ Autres composants (v1.4.0) :
 | `Tag.astro` | Badge mono en capitales | slot, `class` (défaut `mb-4`) |
 | `Thumbnail.astro` | Vignette d'image sur fond muted | `image`, `alt`, `aspect` (`square`, `video`, `wide`), `padding` (`15%`, `3rem`, `none`), `href` |
 | `Carousel.astro` | Carrousel Swiper avec en-tête et flèches | `items` (`image`, `title`, `link`), `tag`, `heading`, `body` |
-| `MeshBackground.astro` | Fond animé (shader mesh, grain) | `fixed`, `blackGrain` ; parent `[data-mesh-root]`, déclencheurs `[data-mesh-trigger]` |
+| `MeshBackground.astro` | Fond animé (shader mesh, grain), sombre ou clair | `tone` (`dark`, `light`), `pose` (0 à 2), `fixed`, `blackGrain` ; parent `[data-mesh-root]`, déclencheurs `[data-mesh-trigger]` (la racine peut l'être elle-même) |
 
 Le Footer utilise `MeshBackground` et `Button` ; `meshFixed` fixe son fond au viewport (apps.hien.design).
 - `theme.css` déclare `@source "./components"` : Tailwind génère les classes des composants sans config.

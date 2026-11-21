@@ -13,48 +13,86 @@ import Button from "./Button.astro";
 type Link = { label: string; href: string };
 
 export interface Props {
-  /** Site qui affiche le footer : son lien interne est masqué. */
+  /** Site qui affiche le footer : son lien dans la navigation entre sites est masqué. */
   currentSite?: SiteKey;
+  /** Affiche la navigation entre les sites (News, Work, About). */
+  showSiteNav?: boolean;
+  /** Ajoute un lien Home vers "/" en tête de liste (masqué sur la page d'accueil). */
+  homeLink?: boolean;
   availabilityLabel?: string | null;
   /** Décoché : la ligne de disponibilité est masquée. */
   isAvailable?: boolean | null;
+  /** Un "?" coupe le titre en deux : la suite passe en gris sur une 2e ligne. */
   heading?: string | null;
   ctaLabel?: string | null;
+  /** Adresse du bouton : mailto:ctaEmail par défaut, ou ctaHref s'il est fourni. */
   ctaEmail?: string | null;
-  /** Liens externes affichés après la navigation entre les sites. */
+  ctaHref?: string | null;
+  /** Liens du CMS, affichés après la navigation entre les sites. */
   navLinks?: Link[] | null;
-  credit?: string;
+  /** Les liens http s'ouvrent dans un nouvel onglet. */
+  externalInNewTab?: boolean;
+  credit?: string | null;
+  /** Heure de Paris après le crédit. */
+  showTime?: boolean;
   /** Fond animé fixé au viewport, visible derrière toute la page (apps). */
   meshFixed?: boolean;
 }
 
 const {
   currentSite,
+  showSiteNav = true,
+  homeLink = false,
   availabilityLabel,
   isAvailable,
   heading,
   ctaLabel,
   ctaEmail,
+  ctaHref,
   navLinks,
-  credit = "Designed & built by Gauthier Hien in Paris, France",
+  externalInNewTab = false,
+  credit,
+  showTime = true,
   meshFixed = false,
 } = Astro.props;
 
 const available = isAvailable ?? true;
 const label = availabilityLabel || "Available for freelance work";
 const title = heading || "Let's work together";
+const [, titleLead = title, titleRest = ""] =
+  title.match(/^(.*?\?)\s*(.+)$/) ?? [];
 const cta = ctaLabel || "Get in touch";
-const email = ctaEmail || "gauthier@hien.design";
-const links: Link[] = navLinks || [
-  { label: "Apps", href: "https://apps.hien.design/" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/gauthierhien/" },
-  { label: "Email", href: "mailto:gauthier@hien.design" },
-];
+const href = ctaHref || `mailto:${ctaEmail || "gauthier@hien.design"}`;
+const hoverLabel = href.startsWith("mailto:")
+  ? href.slice("mailto:".length).split("?")[0]
+  : undefined;
+const creditText = credit || "Designed & built by Gauthier Hien in Paris, France";
+
+// Les liens relatifs vers la page courante sont masqués.
+// build.format "directory" : le pathname peut finir par un slash.
+const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isCurrent = (target: string) => {
+  if (!target.startsWith("/")) return false;
+  const path = target.replace(/\/+$/, "") || "/";
+  return path === "/"
+    ? currentPath === "/"
+    : currentPath === path || currentPath.startsWith(`${path}/`);
+};
+const links: Link[] = [
+  ...(homeLink ? [{ label: "Home", href: "/" }] : []),
+  ...(navLinks || [
+    { label: "Apps", href: "https://apps.hien.design/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/gauthierhien/" },
+    { label: "Email", href: "mailto:gauthier@hien.design" },
+  ]),
+].filter((link) => !isCurrent(link.href));
 
 const onErrorPage = Astro.url.pathname.startsWith("/404");
-const internalLinks = siteNav
-  .filter((link) => link.site !== currentSite || onErrorPage)
-  .map((link) => ({ label: link.label, href: siteHref(link.site, currentSite) }));
+const internalLinks = showSiteNav
+  ? siteNav
+      .filter((link) => link.site !== currentSite || onErrorPage)
+      .map((link) => ({ label: link.label, href: siteHref(link.site, currentSite) }))
+  : [];
 ---
 
 <footer class="footer-root theme-dark text-foreground p-4" data-mesh-root>
@@ -79,14 +117,23 @@ const internalLinks = siteNav
           )}
 
           <!-- Heading -->
-          <h2 class="mb-0">{title}</h2>
+          <h2 class:list={["mb-0", titleRest && "footer-heading"]}>
+            {titleRest ? (
+              <>
+                <span class="footer-heading-lead">{titleLead}</span>
+                <span class="footer-heading-rest">{titleRest}</span>
+              </>
+            ) : (
+              title
+            )}
+          </h2>
         </div>
 
         <!-- Button -->
         <Button
-          href={`mailto:${email}`}
+          href={href}
           label={cta}
-          hoverLabel={email}
+          hoverLabel={hoverLabel}
           size="lg"
           meshTrigger
           class="footer-cta-btn flex-none h-fit"
@@ -100,32 +147,39 @@ const internalLinks = siteNav
         <!-- Product Designer Info -->
         <div class="flex-1 flex flex-col md:flex-row md:gap-2 items-start">
           <span class="text-muted">
-            {credit}
-            <span class="hidden md:inline"> · </span>
-            <span class="md:hidden">
-              <br />
-            </span>
-            <span id="footer-paris-time"></span>
+            {creditText}
+            {showTime && (
+              <>
+                <span class="hidden md:inline"> · </span>
+                <span class="md:hidden">
+                  <br />
+                </span>
+                <span id="footer-paris-time"></span>
+              </>
+            )}
           </span>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 flex flex-col gap-2">
+        <nav class="flex-1 flex flex-col gap-2" aria-label="Footer">
           {internalLinks.map((link) => (
             <a href={link.href} class="font-mono text-xs md:text-sm">
               {link.label}
             </a>
           ))}
-          {links.map((link) => (
-            <a
-              href={link.href}
-              target="_self"
-              rel="noopener noreferrer"
-              class="font-mono text-xs md:text-sm"
-            >
-              {link.label}
-            </a>
-          ))}
+          {links.map((link) => {
+            const newTab = externalInNewTab && link.href.startsWith("http");
+            return (
+              <a
+                href={link.href}
+                target={newTab ? "_blank" : "_self"}
+                rel="noopener noreferrer"
+                class="font-mono text-xs md:text-sm"
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
       </div>
     </div>
@@ -152,6 +206,35 @@ const internalLinks = siteNav
     overflow: hidden;
     isolation: isolate;
     background: oklch(0 0 0);
+  }
+
+  .footer-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-heading-lead,
+  .footer-heading-rest {
+    font-family: var(--font-sans);
+    font-size: inherit;
+    font-weight: 500;
+    letter-spacing: inherit;
+    line-height: inherit;
+  }
+
+  .footer-heading-rest {
+    color: var(--foreground-muted);
+    transition:
+      color 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  .footer-root:has(.footer-cta-btn:hover) .footer-heading-rest,
+  .footer-root:has(.footer-cta-btn:focus-visible) .footer-heading-rest,
+  .footer-root.is-mesh-active .footer-heading-rest {
+    color: var(--foreground);
+    opacity: 0.5;
   }
 
   .footer-cta-container {

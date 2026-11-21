@@ -46,6 +46,43 @@ function mixColor(a: Rgba, b: Rgba, t: number): Rgba {
   ];
 }
 
+type Tone = "dark" | "light";
+
+function readToken(name: string): Rgba {
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  return raw ? cssColor(raw) : WHITE;
+}
+
+// Clair : fond de page et accent (désaturés au repos par un voile CSS).
+function lightRest(): Rgba[] {
+  const background = readToken("--background");
+  const accent = readToken("--accent");
+  return [
+    background,
+    background,
+    mixColor(background, accent, 0.35),
+    accent,
+    background,
+    mixColor(background, accent, 0.62),
+    background,
+  ];
+}
+
+function lightRainbow(): Rgba[] {
+  const background = readToken("--background");
+  const hue = (h: number) => cssColor(`oklch(0.84 0.14 ${h})`);
+  return [background, background, hue(28), hue(125), background, hue(210), hue(320)];
+}
+
+// Trois départs décalés, pour que des cartes voisines ne pulsent pas ensemble.
+const POSES = [
+  { frame: 900, distortion: 0.62, swirl: 0.18, grainMixer: 0.42, offsetX: -0.06, offsetY: 0.04 },
+  { frame: 4800, distortion: 0.4, swirl: 0.28, grainMixer: 0.5, offsetX: 0.08, offsetY: -0.05 },
+  { frame: 9200, distortion: 0.28, swirl: 0.1, grainMixer: 0.34, offsetX: 0.02, offsetY: 0.1 },
+] as const;
+
 function restColors(): Rgba[] {
   return [
     BLACK,
@@ -90,8 +127,11 @@ function mountOne(host: HTMLElement) {
 
   (host as PaperShaderElement).paperShaderMount?.dispose();
 
-  const rest = restColors();
-  const rainbow = rainbowColors();
+  const bg = host.closest<HTMLElement>(".mesh-bg");
+  const tone: Tone = bg?.dataset.tone === "light" ? "light" : "dark";
+  const pose = POSES[Number(bg?.dataset.pose ?? 0) % POSES.length] ?? POSES[0];
+  const rest = tone === "light" ? lightRest() : restColors();
+  const rainbow = tone === "light" ? lightRainbow() : rainbowColors();
   let mount: ShaderMount;
   try {
     mount = new ShaderMount(
@@ -103,20 +143,20 @@ function mountOne(host: HTMLElement) {
         u_rotation: 0,
         u_originX: 0.5,
         u_originY: 0.5,
-        u_offsetX: -0.06,
-        u_offsetY: 0.04,
+        u_offsetX: pose.offsetX,
+        u_offsetY: pose.offsetY,
         u_worldWidth: 0,
         u_worldHeight: 0,
         u_colors: rest,
         u_colorsCount: rest.length,
-        u_distortion: 0.62,
-        u_swirl: 0.18,
-        u_grainMixer: 0.42,
+        u_distortion: pose.distortion,
+        u_swirl: pose.swirl,
+        u_grainMixer: pose.grainMixer,
         u_grainOverlay: 0,
       },
       { alpha: false, antialias: false, powerPreference: "low-power" },
       desiredSpeed(),
-      900,
+      pose.frame,
       2,
       720 * 1000,
     );
@@ -138,6 +178,8 @@ function mountOne(host: HTMLElement) {
   const triggers = Array.from(
     scope.querySelectorAll<HTMLElement>("[data-mesh-trigger]"),
   );
+  // La racine peut être son propre déclencheur (une carte entière).
+  if (root?.matches("[data-mesh-trigger]")) triggers.push(root);
   const abort = new AbortController();
 
   const active = new Set<HTMLElement>();

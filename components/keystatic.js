@@ -35,9 +35,16 @@ export const footerSingleton = singleton({
       label: "Available (green LED; if unchecked, the availability line is hidden)",
       defaultValue: true,
     }),
-    heading: fields.text({ label: "Heading (H2)" }),
+    heading: fields.text({
+      label: "Heading (H2)",
+      description: 'A "?" splits it: the rest goes grey on a second line.',
+    }),
     ctaLabel: fields.text({ label: "CTA Button Label" }),
     ctaEmail: fields.text({ label: "CTA Button Email" }),
+    credit: fields.text({
+      label: "Credit line (optional)",
+      description: "Defaults to: Designed & built by Gauthier Hien in Paris, France",
+    }),
     navLinks: fields.array(
       fields.object({
         label: fields.text({ label: "Link Label" }),

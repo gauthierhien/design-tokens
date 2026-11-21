@@ -16,6 +16,8 @@ colors:
   dark-foreground: "oklch(97% 0 0)"
   dark-foreground-muted: "oklch(43.9% 0 0)"
   dark-border: "oklch(26.9% 0 0)"
+  page-dark-background: "oklch(0% 0 0)"
+  page-dark-background-muted: "oklch(14.5% 0 0)"
 typography:
   sans:
     fontFamily: Geist Variable
@@ -113,8 +115,8 @@ components:
 Minimal, technical, precise — the visual identity of a Paris-based Design Engineer.
 Surfaces stay cool and neutral (never warm cream, never purple/indigo gradients).
 A vivid lime/chartreuse accent pairs with a terracotta/orange hover. All colors are
-expressed exclusively in `oklch`. There is no site-wide dark mode: `.theme-dark` is
-applied locally (e.g. a footer band), not as a global theme toggle.
+expressed exclusively in `oklch`. A full dark mode exists but is opt-in (`data-theme`); sites are light by
+default and `.theme-dark` stays a local inverted surface (footer band).
 
 This package ships **runtime tokens** (`theme.css`): colors, font *names*, the
 type scale (portfolio breakpoint ladder) and the page grid utilities, plus the **shared Header and
@@ -135,7 +137,12 @@ availability LEDs. Muted foreground handles captions and secondary copy.
 - **accent-hover** — Terracotta/orange for hover/active on accent moments.
 - **border** — Fine hairline separation; prefer borders over shadows.
 - **status** — Availability LED / success green (`bg-status`). Same in `.theme-dark`.
-- **dark-*** — Local inverted surfaces only (`.theme-dark`), not a global mode.
+- **dark-***: Local inverted surfaces (`.theme-dark`, e.g. the footer band).
+- **Dark mode**: opt-in for the whole page: `<html data-theme="dark">`, or
+  `data-theme="auto"` to follow the system. Same palette as `.theme-dark`,
+  but the page background is pure black (`oklch(0% 0 0)`) and
+  `background-muted` is `oklch(14.5% 0 0)`. Tailwind's `dark:` variant follows
+  the same attribute. Sites stay light until they set it.
 
 ## Typography
 
@@ -191,7 +198,7 @@ from each site's Keystatic). The rest is guidance: component CSS lives in each a
 - **Tag** — Mono uppercase; `foreground` on `background`.
 - **Header**: tagline (mono, top left) and logo (top right). No navigation.
 - **Footer**: `.theme-dark` band on a mesh shader, availability LED line (hidden when unavailable), H2, rounded CTA, credit with Paris time, links between sites.
-- **Button / Tag / Thumbnail / Carousel / MeshBackground**: shared Astro components (see README). The mesh background is the brand's motion signature, in two tones: dark (black, low-opacity light shapes, grain) and light (page background and accent greyed by a saturation veil, grain). Both turn rainbow only while their trigger is hovered or focused.
+- **Button / Tag / ImageWide / ImageSquare / Section* / Carousel / Lightbox / MeshBackground**: shared Astro components (see README). Sections compose a SectionHeader (tag, heading, body, all optional) with images; images carry an optional caption (mono) and link (↗). The mesh background is the brand's motion signature, in two tones: dark (black, low-opacity light shapes, grain) and light (page background and accent greyed by a saturation veil, grain). Both turn rainbow only while their trigger is hovered or focused.
 - Do not bake page modules (homepage Modules, Skills) into the brand: those stay app patterns.
 
 ## Do's and Don'ts
@@ -205,6 +212,6 @@ from each site's Keystatic). The rest is guidance: component CSS lives in each a
 **Don't**
 
 - Invent a purple/indigo palette, generic cream + terracotta look, or dense broadsheet layout.
-- Ship global dark mode, glows, multi-shadows, or UI emojis.
+- Turn dark mode on for a site without asking; ship glows, multi-shadows, or UI emojis.
 - Put content images, font files, layout utilities, or page-specific component CSS in this package.
 - Hardcode duplicate tokens in apps once this package is wired (including LED green as `#22c55e`).

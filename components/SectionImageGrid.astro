@@ -1,0 +1,110 @@
+---
+/**
+ * Section avec une grille d'images et un en-tête optionnel (badge, titre,
+ * texte). Une seule image : image large. Plusieurs : carrés, 1 colonne sur
+ * mobile, `columns` (2 par défaut) dès md, 1px d'écart. Chaque image peut
+ * avoir une légende et un lien. lightbox : un clic ouvre la visionneuse.
+ * cta : pilule « + » posée sur un dégradé en bas de la grille.
+ * Modules B et D du portfolio, médias des pages projet du feed.
+ */
+import type { ImageMetadata } from "astro";
+import ImageWide from "./ImageWide.astro";
+import ImageSquare from "./ImageSquare.astro";
+import SectionHeader from "./SectionHeader.astro";
+import Lightbox from "./Lightbox.astro";
+import Button from "./Button.astro";
+
+export interface GridItem {
+  image: ImageMetadata | null;
+  alt?: string | null;
+  caption?: string | null;
+  href?: string | null;
+}
+
+export interface Props {
+  items: (GridItem | ImageMetadata | null)[];
+  tag?: string | null;
+  heading?: string | null;
+  body?: string | null;
+  columns?: 2 | 3 | 4;
+  lightbox?: boolean;
+  cta?: { label?: string | null; href?: string | null } | null;
+  class?: string;
+}
+
+const {
+  items: raw,
+  tag,
+  heading,
+  body,
+  columns = 2,
+  lightbox = false,
+  cta,
+  class: extraClass,
+} = Astro.props;
+
+const items = (raw ?? [])
+  .map((item) =>
+    item && "src" in item ? ({ image: item } as GridItem) : (item as GridItem | null),
+  )
+  .filter((item): item is GridItem & { image: ImageMetadata } => Boolean(item?.image));
+
+const single = items.length === 1;
+const name = heading || "Gallery";
+const lightboxId = `grid-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${items.length}`;
+const altOf = (item: GridItem, index: number) =>
+  item.alt || item.caption || `${name} - Image ${index + 1}`;
+const cols = { 2: "md:grid-cols-2", 3: "md:grid-cols-3", 4: "md:grid-cols-2 xl:grid-cols-4" }[columns];
+const hasHeader = Boolean(tag || heading || body);
+---
+
+<section
+  class:list={[
+    "relative flex flex-col px-4",
+    hasHeader && "gap-8 md:gap-16",
+    cta && "pt-1",
+    extraClass,
+  ]}
+>
+  <SectionHeader tag={tag} heading={heading} body={body} />
+
+  {
+    items.length > 0 && (
+      <div class:list={["grid gap-1", single ? "grid-cols-1" : ["grid-cols-1", cols]]}>
+        {items.map((item, index) => {
+          const shared = {
+            image: item.image,
+            alt: altOf(item, index),
+            caption: item.caption,
+            href: item.href,
+            lightbox: lightbox ? { id: lightboxId, index } : null,
+          };
+          return single ? <ImageWide {...shared} /> : <ImageSquare {...shared} />;
+        })}
+      </div>
+    )
+  }
+
+  {
+    cta?.label && cta?.href && (
+      <div class="absolute inset-x-0 bottom-0 h-2/3 flex items-end justify-center pb-8 md:pb-12 bg-linear-to-t from-background via-background/80 to-transparent pointer-events-none">
+        <Button
+          href={cta.href}
+          label={cta.label}
+          variant="compact"
+          icon="plus"
+          class="pointer-events-auto"
+        />
+      </div>
+    )
+  }
+</section>
+
+{
+  lightbox && items.length > 0 && (
+    <Lightbox
+      id={lightboxId}
+      images={items.map((item, index) => ({ src: item.image, alt: altOf(item, index) }))}
+    />
+  )
+}

@@ -1,0 +1,48 @@
+---
+/**
+ * En-tête de section : badge, titre H2 et paragraphe, tous optionnels, sur
+ * la colonne des modules (4 colonnes sur 6 dès md, sur 8 en 2xl). Le slot
+ * "aside" se place à droite du paragraphe dès md (flèches d'un carrousel).
+ *
+ * bleed : la section parente n'a pas de marge latérale (carrousel) ; la
+ * grille se cale alors sur toute la largeur et garde 16px sur mobile.
+ */
+import Tag from "./Tag.astro";
+
+export interface Props {
+  tag?: string | null;
+  heading?: string | null;
+  body?: string | null;
+  bleed?: boolean;
+  class?: string;
+}
+
+const { tag, heading, body, bleed = false, class: extraClass } = Astro.props;
+const hasAside = Astro.slots.has("aside");
+const show = tag || heading || body || hasAside;
+---
+
+{
+  show && (
+    <div
+      class:list={[
+        "w-full flex flex-col md:grid md:grid-cols-6 2xl:grid-cols-8",
+        bleed && "px-4 md:px-0",
+        extraClass,
+      ]}
+    >
+      <div class="md:col-start-2 2xl:col-start-3 md:col-span-4">
+        {tag && <Tag>{tag}</Tag>}
+        {heading && <h2>{heading}</h2>}
+        {hasAside ? (
+          <div class="flex items-end justify-between gap-4">
+            {body ? <p class="max-w-2xl">{body}</p> : <span />}
+            <slot name="aside" />
+          </div>
+        ) : (
+          body && <p class="max-w-2xl">{body}</p>
+        )}
+      </div>
+    </div>
+  )
+}

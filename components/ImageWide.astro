@@ -1,0 +1,17 @@
+---
+/**
+ * Image large : carrée sur mobile, 16:9 dès md (responsive: false pour
+ * garder le 16:9 partout). Légende et lien optionnels, ou Lightbox.
+ */
+import type { ComponentProps } from "astro/types";
+import MediaFigure from "./MediaFigure.astro";
+
+type Props = Omit<ComponentProps<typeof MediaFigure>, "aspect"> & {
+  /** true (défaut) : carrée sur mobile, 16:9 dès md. */
+  responsive?: boolean;
+};
+
+const { responsive = true, ...rest } = Astro.props;
+---
+
+<MediaFigure {...rest} aspect={responsive ? "video" : "wide"} />

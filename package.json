@@ -1,6 +1,6 @@
 {
   "name": "@hien/design-tokens",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Brand design tokens and shared Astro components for the hien.design sites",
   "license": "MIT",
   "type": "module",
@@ -28,7 +28,13 @@
     "./Thumbnail.astro": "./components/Thumbnail.astro",
     "./Carousel.astro": "./components/Carousel.astro",
     "./MeshBackground.astro": "./components/MeshBackground.astro",
-    "./mesh": "./components/mesh.ts"
+    "./mesh": "./components/mesh.ts",
+    "./ImageWide.astro": "./components/ImageWide.astro",
+    "./ImageSquare.astro": "./components/ImageSquare.astro",
+    "./SectionHeader.astro": "./components/SectionHeader.astro",
+    "./SectionImageWide.astro": "./components/SectionImageWide.astro",
+    "./SectionImageGrid.astro": "./components/SectionImageGrid.astro",
+    "./Lightbox.astro": "./components/Lightbox.astro"
   },
   "repository": {
     "type": "git",

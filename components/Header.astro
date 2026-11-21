@@ -31,7 +31,8 @@ const {
 } = Astro.props;
 
 const alt = logoAlt || "Gauthier Hien Logo";
-const logoClass = "w-48 lg:w-56 xl:w-64 h-auto";
+// Logo noir : inversé en mode sombre (data-theme="dark" ou "auto").
+const logoClass = "w-48 lg:w-56 xl:w-64 h-auto dark:invert";
 ---
 
 <header

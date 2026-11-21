@@ -1,0 +1,13 @@
+---
+/**
+ * Image carrée. Légende et lien optionnels, ou Lightbox.
+ */
+import type { ComponentProps } from "astro/types";
+import MediaFigure from "./MediaFigure.astro";
+
+type Props = Omit<ComponentProps<typeof MediaFigure>, "aspect">;
+
+const props = Astro.props;
+---
+
+<MediaFigure {...props} aspect="square" />

@@ -6,18 +6,22 @@
  * variant
  * - "outline" (défaut) : filet, pastille encre. S'adapte à .theme-dark.
  * - "overlay" : posé sur une image ou sur le fond animé, texte clair.
+ * - "compact" : pilule courte sur fond muted, libellé en texte courant,
+ *   petite pastille (le « + » des grilles d'images du portfolio).
+ * icon : "arrow" (défaut) ou "plus".
  * size : "md" (pastille 48 à 64 px) ou "lg" (64 à 96 px, celui du footer).
  * Sans href (ou disabled), rendu inactif. target="_blank" ajoute rel noopener.
  * meshTrigger : déclenche la transition du fond animé (MeshBackground).
  */
-import { ArrowRight } from "@lucide/astro";
+import { ArrowRight, Plus } from "@lucide/astro";
 
 export interface Props {
   href?: string | null;
   label: string;
   /** Libellé affiché au survol, ex. l'adresse email. */
   hoverLabel?: string;
-  variant?: "outline" | "overlay";
+  variant?: "outline" | "overlay" | "compact";
+  icon?: "arrow" | "plus";
   size?: "md" | "lg";
   disabled?: boolean;
   target?: string;
@@ -31,6 +35,7 @@ const {
   label,
   hoverLabel,
   variant = "outline",
+  icon = "arrow",
   size = "md",
   disabled = false,
   target,
@@ -40,23 +45,28 @@ const {
 } = Astro.props;
 
 const overlay = variant === "overlay";
+const compact = variant === "compact";
+const Icon = icon === "plus" ? Plus : ArrowRight;
 const inactive = disabled || !href;
 const resolvedTarget = target;
 
 const classes = [
-  "hd-button flex w-full items-center justify-between rounded-full border p-4 transition-all duration-200",
-  overlay
-    ? "border-background/40 bg-transparent text-background hover:border-background"
-    : "border-border hover:border-foreground",
+  compact
+    ? "hd-button flex items-center gap-6 p-2 pl-6 bg-background-muted rounded-full"
+    : "hd-button flex w-full items-center justify-between rounded-full border p-4 transition-all duration-200",
+  !compact &&
+    (overlay
+      ? "border-background/40 bg-transparent text-background hover:border-background"
+      : "border-border hover:border-foreground"),
   inactive && "opacity-70 pointer-events-none",
   extraClass,
 ];
 const disc = [
   "aspect-square h-auto flex items-center justify-center rounded-full shrink-0",
-  size === "lg" ? "w-16 md:w-24" : "w-12 md:w-16",
+  compact ? "w-10" : size === "lg" ? "w-16 md:w-24" : "w-12 md:w-16",
   overlay ? "bg-background" : "bg-foreground",
 ];
-const iconSize = size === "lg" ? 32 : 24;
+const iconSize = size === "lg" && !compact ? 32 : 24;
 const iconColor = overlay ? "var(--foreground)" : "var(--background)";
 const Tag = inactive ? "div" : "a";
 ---
@@ -72,9 +82,15 @@ const Tag = inactive ? "div" : "a";
   data-default-label={hoverLabel ? label : undefined}
   data-hover-label={hoverLabel}
 >
-  <h4 class="hd-button-label text-left mb-0 pl-2 md:pl-4">{label}</h4>
+  {
+    compact ? (
+      <p class="hd-button-label">{label}</p>
+    ) : (
+      <h4 class="hd-button-label text-left mb-0 pl-2 md:pl-4">{label}</h4>
+    )
+  }
   <span class:list={disc}>
-    <ArrowRight size={iconSize} stroke-width={1} color={iconColor} />
+    <Icon size={iconSize} stroke-width={1} color={iconColor} />
   </span>
 </Tag>
 

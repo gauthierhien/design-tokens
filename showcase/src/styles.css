@@ -79,13 +79,6 @@
   }
 }
 
-@utility page-grid {
-  @apply md:grid md:grid-cols-8;
-}
-
-@utility page-grid-content {
-  @apply md:col-start-2 md:col-span-6 2xl:col-start-3 2xl:col-span-4;
-}
 
 ::selection {
   background: var(--accent);

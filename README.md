@@ -19,7 +19,7 @@ pnpm add github:gauthierhien/hien-design-tokens#v1.3.0
 
 Load **Geist** and **Geist Mono** in the consuming app (e.g. `@fontsource-variable/geist` + mono). Fonts are not bundled here.
 
-Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the type scale (`text-h1` … `text-h4`, `text-body`, `text-body-prose`, `text-lead`, `text-label`). For local inverted surfaces, wrap with `.theme-dark`.
+Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the type scale (`text-h1` … `text-h4`, `text-body`, `text-body-prose`, `text-lead`, `text-label`) and the page grid (`page-grid`, `page-grid-content`, see DESIGN.md > Layout). For local inverted surfaces, wrap with `.theme-dark`.
 
 ## Composants partagés (Astro)
 
@@ -46,7 +46,19 @@ const footer = await getEntry("footer-data", "index");
 - `currentSite` (`home`, `feed`, `cv`) : le logo et la navigation entre sites pointent en relatif vers le site courant, en absolu vers les autres (`@hien/design-tokens/sites`).
 - Header : `tagline`, `logoSrc` (défaut `/gauthier-hien-logo.svg`, servi par le site), `logoAlt`.
 - Footer : `availabilityLabel`, `isAvailable` (décoché : ligne masquée), `heading`, `ctaLabel`, `ctaEmail`, `navLinks`, `credit`.
-- Peer dependencies côté site : `astro`, `@keystatic/core`, `@lucide/astro`, `@paper-design/shaders`.
+- Peer dependencies côté site : `astro`, `@keystatic/core`, `@lucide/astro`, `@paper-design/shaders`, `swiper` (pour le Carousel).
+
+Autres composants (v1.4.0) :
+
+| Import | Rôle | Props principales |
+| --- | --- | --- |
+| `Button.astro` | Bouton pilule pleine largeur, pastille flèche | `href`, `label`, `hoverLabel`, `variant` (`outline`, `overlay`), `size` (`md`, `lg`), `target`, `meshTrigger` |
+| `Tag.astro` | Badge mono en capitales | slot, `class` (défaut `mb-4`) |
+| `Thumbnail.astro` | Vignette d'image sur fond muted | `image`, `alt`, `aspect` (`square`, `video`, `wide`), `padding` (`15%`, `3rem`, `none`), `href` |
+| `Carousel.astro` | Carrousel Swiper avec en-tête et flèches | `items` (`image`, `title`, `link`), `tag`, `heading`, `body` |
+| `MeshBackground.astro` | Fond animé (shader mesh, grain) | `fixed`, `blackGrain` ; parent `[data-mesh-root]`, déclencheurs `[data-mesh-trigger]` |
+
+Le Footer utilise `MeshBackground` et `Button` ; `meshFixed` fixe son fond au viewport (apps.hien.design).
 - `theme.css` déclare `@source "./components"` : Tailwind génère les classes des composants sans config.
 
 ## Vitrine

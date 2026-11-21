@@ -116,11 +116,10 @@ A vivid lime/chartreuse accent pairs with a terracotta/orange hover. All colors 
 expressed exclusively in `oklch`. There is no site-wide dark mode: `.theme-dark` is
 applied locally (e.g. a footer band), not as a global theme toggle.
 
-This package ships **runtime tokens** (`theme.css`): colors, font *names*, and
-the type scale (portfolio breakpoint ladder), plus the **shared Header and
+This package ships **runtime tokens** (`theme.css`): colors, font *names*, the
+type scale (portfolio breakpoint ladder) and the page grid utilities, plus the **shared Header and
 Footer** Astro components of the hien.design sites (`components/`). Their
-content comes from each site's Keystatic. Spacing, radii, buttons and layout
-utilities stay in each app and are documented here as guidance.
+content comes from each site's Keystatic. Spacing and radii stay in each app and are documented here as guidance.
 
 ## Colors
 
@@ -156,10 +155,20 @@ load fonts themselves (`@fontsource-variable/geist` and the mono package).
 
 ## Layout
 
-Utility-first Tailwind. Prefer an 8-column mental grid with centered content
-(columns 2–6, or 3–4 at `2xl`). The `page-grid` / `page-grid-content` utilities
-live in each app. Major sections get generous vertical air. No decorative cards:
-no multi-layer shadows, no pill clusters, no glow effects.
+Utility-first Tailwind, one page grid shared by every site and shipped in
+`theme.css`:
+
+- `page-grid`: block below `md`, then 8 equal columns, no gutter. Pages keep
+  a 16px side margin (`px-4`).
+- `page-grid-content`: columns 2 to 7 (6 of 8) from `md` to `xl`, columns 3
+  to 6 (4 of 8) from `2xl` (1536px).
+- Modules that need a different span (homepage modules, footer, `xl:`
+  heroes) keep inline variants on the same 8 columns (`2xl:col-start-3
+  2xl:col-span-4` for the footer CTA, `md:grid-cols-6 2xl:grid-cols-8` for
+  carousel headers).
+
+Major sections get generous vertical air. No decorative cards: no
+multi-layer shadows, no pill clusters, no glow effects.
 
 ## Elevation & Depth
 
@@ -182,6 +191,7 @@ from each site's Keystatic). The rest is guidance: component CSS lives in each a
 - **Tag** — Mono uppercase; `foreground` on `background`.
 - **Header**: tagline (mono, top left) and logo (top right). No navigation.
 - **Footer**: `.theme-dark` band on a mesh shader, availability LED line (hidden when unavailable), H2, rounded CTA, credit with Paris time, links between sites.
+- **Button / Tag / Thumbnail / Carousel / MeshBackground**: shared Astro components (see README). The mesh background is the brand's motion signature: black, low-opacity light shapes, grain; rainbow only while a CTA is hovered or focused.
 - Do not bake page modules (homepage Modules, Skills) into the brand: those stay app patterns.
 
 ## Do's and Don'ts

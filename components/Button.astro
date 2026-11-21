@@ -1,0 +1,100 @@
+---
+/**
+ * Bouton pilule pleine largeur : libellé à gauche, pastille ronde avec une
+ * flèche à droite. Full resume, Get in touch, Download on the App Store.
+ *
+ * variant
+ * - "outline" (défaut) : filet, pastille encre. S'adapte à .theme-dark.
+ * - "overlay" : posé sur une image ou sur le fond animé, texte clair.
+ * size : "md" (pastille 48 à 64 px) ou "lg" (64 à 96 px, celui du footer).
+ * Sans href (ou disabled), rendu inactif. target="_blank" ajoute rel noopener.
+ * meshTrigger : déclenche la transition du fond animé (MeshBackground).
+ */
+import { ArrowRight } from "@lucide/astro";
+
+export interface Props {
+  href?: string | null;
+  label: string;
+  /** Libellé affiché au survol, ex. l'adresse email. */
+  hoverLabel?: string;
+  variant?: "outline" | "overlay";
+  size?: "md" | "lg";
+  disabled?: boolean;
+  target?: string;
+  download?: boolean;
+  meshTrigger?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  label,
+  hoverLabel,
+  variant = "outline",
+  size = "md",
+  disabled = false,
+  target,
+  download = false,
+  meshTrigger = false,
+  class: extraClass,
+} = Astro.props;
+
+const overlay = variant === "overlay";
+const inactive = disabled || !href;
+const resolvedTarget = target;
+
+const classes = [
+  "hd-button flex w-full items-center justify-between rounded-full border p-4 transition-all duration-200",
+  overlay
+    ? "border-background/40 bg-transparent text-background hover:border-background"
+    : "border-border hover:border-foreground",
+  inactive && "opacity-70 pointer-events-none",
+  extraClass,
+];
+const disc = [
+  "aspect-square h-auto flex items-center justify-center rounded-full shrink-0",
+  size === "lg" ? "w-16 md:w-24" : "w-12 md:w-16",
+  overlay ? "bg-background" : "bg-foreground",
+];
+const iconSize = size === "lg" ? 32 : 24;
+const iconColor = overlay ? "var(--foreground)" : "var(--background)";
+const Tag = inactive ? "div" : "a";
+---
+
+<Tag
+  class:list={classes}
+  href={inactive ? undefined : href}
+  target={inactive ? undefined : resolvedTarget}
+  rel={!inactive && resolvedTarget === "_blank" ? "noopener noreferrer" : undefined}
+  download={!inactive && download ? "" : undefined}
+  aria-disabled={inactive ? "true" : undefined}
+  data-mesh-trigger={meshTrigger ? "" : undefined}
+  data-default-label={hoverLabel ? label : undefined}
+  data-hover-label={hoverLabel}
+>
+  <h4 class="hd-button-label text-left mb-0 pl-2 md:pl-4">{label}</h4>
+  <span class:list={disc}>
+    <ArrowRight size={iconSize} stroke-width={1} color={iconColor} />
+  </span>
+</Tag>
+
+<script>
+  function bindHoverLabels() {
+    document
+      .querySelectorAll<HTMLElement>(".hd-button[data-hover-label]")
+      .forEach((btn) => {
+        if (btn.dataset.bound === "1") return;
+        btn.dataset.bound = "1";
+        const labelEl = btn.querySelector(".hd-button-label");
+        btn.addEventListener("mouseenter", () => {
+          if (labelEl) labelEl.textContent = btn.dataset.hoverLabel ?? "";
+        });
+        btn.addEventListener("mouseleave", () => {
+          if (labelEl) labelEl.textContent = btn.dataset.defaultLabel ?? "";
+        });
+      });
+  }
+
+  bindHoverLabels();
+  document.addEventListener("astro:page-load", bindHoverLabels);
+</script>

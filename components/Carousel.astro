@@ -1,0 +1,229 @@
+---
+/**
+ * Carrousel horizontal (Swiper) : en-tête optionnel (tag, titre, texte) avec
+ * les boutons précédent / suivant ronds à droite dès md, puis des slides
+ * qui débordent de la grille. Chaque slide est une vignette 16:9 (carrée sur
+ * mobile), avec un titre et un lien optionnels. Une slide sur deux est
+ * décalée vers le bas en 2xl.
+ * Dépendance côté site : swiper (>= 11).
+ */
+import { ChevronLeft, ChevronRight, ArrowUpRight } from "@lucide/astro";
+import type { ImageMetadata } from "astro";
+import "swiper/css";
+import Tag from "./Tag.astro";
+import Thumbnail from "./Thumbnail.astro";
+
+export interface CarouselItem {
+  image: ImageMetadata | null;
+  title?: string | null;
+  description?: string | null;
+  link?: string | null;
+}
+
+export interface Props {
+  items: CarouselItem[];
+  tag?: string | null;
+  heading?: string | null;
+  body?: string | null;
+  class?: string;
+}
+
+const { items: rawItems, tag, heading, body, class: extraClass } = Astro.props;
+const items =
+  rawItems?.filter(
+    (item): item is CarouselItem & { image: ImageMetadata } =>
+      item?.image != null,
+  ) || [];
+---
+
+<section
+  class:list={[
+    "hd-carousel flex flex-col gap-4 md:gap-16 overflow-hidden",
+    extraClass,
+  ]}
+>
+  <div class="md:grid md:grid-cols-6 2xl:grid-cols-8 px-4 md:px-0">
+    <div class="md:col-start-2 2xl:col-start-3 md:col-span-4">
+      {tag && <Tag>{tag}</Tag>}
+      {heading && <h2>{heading}</h2>}
+      <div class="flex items-end justify-between gap-4">
+        {body ? <p class="max-w-2xl">{body}</p> : <span />}
+        {
+          items.length >= 2 && (
+            <div class="hidden md:flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                class="hd-carousel-prev w-10 h-10 flex items-center justify-center rounded-full bg-background-muted cursor-pointer"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={24} stroke-width={1} />
+              </button>
+              <button
+                type="button"
+                class="hd-carousel-next w-10 h-10 flex items-center justify-center rounded-full bg-background-muted cursor-pointer"
+                aria-label="Next image"
+              >
+                <ChevronRight size={24} stroke-width={1} />
+              </button>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="hd-carousel-swiper swiper w-full">
+    <div class="swiper-wrapper">
+      {
+        items.map((item, index) => (
+          <div
+            class:list={[
+              "swiper-slide flex flex-col select-none",
+              index % 2 === 1 && "2xl:pt-40",
+              item.link && "cursor-pointer",
+            ]}
+            data-card-link={item.link || undefined}
+            role={item.link ? "link" : undefined}
+            tabindex={item.link ? 0 : undefined}
+            aria-label={item.link && item.title ? `Open ${item.title}` : undefined}
+          >
+            <Thumbnail
+              image={item.image}
+              alt={item.title || `${heading || "Gallery"} - Image ${index + 1}`}
+              aspect="video"
+              padding="3rem"
+            />
+            {(item.title || item.link) && (
+              <div class="flex flex-row w-full justify-between items-center mt-4">
+                {item.title ? <span>{item.title}</span> : <span />}
+                {item.link && <ArrowUpRight size={24} stroke-width={1} />}
+              </div>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import Swiper from "swiper";
+  import { Navigation } from "swiper/modules";
+
+  function getSwiperParams(w: number) {
+    if (w >= 1536) {
+      return {
+        spaceBetween: Math.round(w / 8),
+        slidesOffsetBefore: Math.round((w / 8) * 2),
+        slidesOffsetAfter: Math.round((w / 8) * 2),
+      };
+    }
+    if (w >= 768) {
+      return {
+        spaceBetween: 32,
+        slidesOffsetBefore: Math.round(w / 6),
+        slidesOffsetAfter: Math.round(w / 6),
+      };
+    }
+    return { spaceBetween: 16, slidesOffsetBefore: 16, slidesOffsetAfter: 16 };
+  }
+
+  function getBreakpoint(w: number) {
+    if (w >= 1536) return "2xl";
+    if (w >= 768) return "md";
+    return "sm";
+  }
+
+  function openLink(card: HTMLElement) {
+    const link = card.getAttribute("data-card-link");
+    if (link) window.open(link, "_blank");
+  }
+
+  function initCarousels() {
+    document.querySelectorAll<HTMLElement>(".hd-carousel").forEach((section) => {
+      const container = section.querySelector<HTMLElement>(".hd-carousel-swiper");
+      if (!container) return;
+
+      // Détruire avant de recréer (navigation Astro, remontage).
+      const existing = (container as HTMLElement & { swiper?: Swiper }).swiper;
+      existing?.destroy(true, true);
+
+      const prevEl = section.querySelector<HTMLElement>(".hd-carousel-prev");
+      const nextEl = section.querySelector<HTMLElement>(".hd-carousel-next");
+      let breakpoint = getBreakpoint(window.innerWidth);
+
+      const swiper = new Swiper(container, {
+        modules: [Navigation],
+        slidesPerView: "auto",
+        grabCursor: true,
+        ...getSwiperParams(window.innerWidth),
+        navigation: prevEl && nextEl ? { prevEl, nextEl } : false,
+      });
+
+      window.addEventListener(
+        "resize",
+        () => {
+          const next = getBreakpoint(window.innerWidth);
+          if (next === breakpoint) return;
+          breakpoint = next;
+          Object.assign(swiper.params, getSwiperParams(window.innerWidth));
+          swiper.update();
+        },
+        { passive: true },
+      );
+
+      if (container.dataset.linksBound === "1") return;
+      container.dataset.linksBound = "1";
+      container
+        .querySelectorAll<HTMLElement>("[data-card-link]")
+        .forEach((card) => {
+          card.addEventListener("click", () => openLink(card));
+          card.addEventListener("keydown", (e: KeyboardEvent) => {
+            if (e.key !== "Enter" && e.key !== " ") return;
+            e.preventDefault();
+            openLink(card);
+          });
+        });
+    });
+  }
+
+  initCarousels();
+  document.addEventListener("astro:page-load", initCarousels);
+</script>
+
+<style>
+  /* Hauteurs intrinsèques (Swiper force height: 100% par défaut). */
+  .hd-carousel-swiper,
+  .hd-carousel-swiper :global(.swiper-wrapper),
+  .hd-carousel-swiper :global(.swiper-slide) {
+    height: auto;
+  }
+
+  /* Slides alignées en haut pour que le décalage 2xl:pt-40 se voie. */
+  .hd-carousel-swiper :global(.swiper-wrapper) {
+    align-items: flex-start;
+  }
+
+  .hd-carousel-swiper :global(.swiper-slide) {
+    width: 85%;
+  }
+
+  @media (min-width: 768px) {
+    .hd-carousel-swiper :global(.swiper-slide) {
+      width: calc(100vw / 6 * 4);
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .hd-carousel-swiper :global(.swiper-slide) {
+      width: calc(100vw / 8 * 3);
+    }
+  }
+
+  .hd-carousel-prev:global(.swiper-button-disabled),
+  .hd-carousel-next:global(.swiper-button-disabled) {
+    opacity: 0.3;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+</style>

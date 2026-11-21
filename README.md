@@ -44,7 +44,7 @@ const footer = await getEntry("footer-data", "index");
 ```
 
 - `currentSite` (`home`, `feed`, `cv`) : le logo et la navigation entre sites pointent en relatif vers le site courant, en absolu vers les autres (`@hien/design-tokens/sites`).
-- Header : `tagline`, `taglineTone` (`muted` sur apps), `logo` (image du CMS) ou `logoSrc` (défaut `/gauthier-hien-logo.svg`), `logoAlt`, `logoHref`.
+- Header : `tagline`, `logo` (image du CMS) ou `logoSrc` (défaut `/gauthier-hien-logo.svg`), `logoAlt`, `logoHref`.
 - Footer : `availabilityLabel`, `isAvailable` (décoché : ligne masquée), `heading` (un « ? » coupe le titre, la suite passe en gris), `ctaLabel`, `ctaEmail` ou `ctaHref`, `navLinks`, `credit`. Options de structure : `showSiteNav` (navigation News, Work, About), `homeLink` (lien Home en tête), `externalInNewTab`, `showTime` (heure de Paris), `meshFixed` (fond fixé au viewport). Les liens relatifs vers la page courante sont masqués.
 - Peer dependencies côté site : `astro`, `@keystatic/core`, `@lucide/astro`, `@paper-design/shaders`, `swiper` (pour le Carousel).
 

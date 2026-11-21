@@ -182,6 +182,7 @@ from each site's Keystatic). The rest is guidance: component CSS lives in each a
 - **Tag** — Mono uppercase; `foreground` on `background`.
 - **Header**: tagline (mono, top left) and logo (top right). No navigation.
 - **Footer**: `.theme-dark` band on a mesh shader, availability LED line (hidden when unavailable), H2, rounded CTA, credit with Paris time, links between sites.
+- **Button / Tag / Thumbnail / Carousel / MeshBackground**: shared Astro components (see README). The mesh background is the brand's motion signature: black, low-opacity light shapes, grain; rainbow only while a CTA is hovered or focused.
 - Do not bake page modules (homepage Modules, Skills) into the brand: those stay app patterns.
 
 ## Do's and Don'ts

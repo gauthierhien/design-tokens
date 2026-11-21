@@ -11,7 +11,7 @@ const SPEED = 0.45;
 const FADE_MS = 1100;
 const DESKTOP = "(min-width: 768px)";
 const REDUCED = "(prefers-reduced-motion: reduce)";
-const STATE_KEY = "__footerMesh";
+const STATE_KEY = "__hienMesh";
 
 const BLACK: Rgba = [0, 0, 0, 1];
 const WHITE: Rgba = [1, 1, 1, 1];
@@ -73,12 +73,14 @@ function desiredSpeed() {
   return SPEED;
 }
 
-export function mountFooterMesh() {
-  const host = document.querySelector<HTMLElement>(".footer-mesh");
-  if (!host) return;
+/** Monte (ou remonte) chaque calque .mesh-layer de la page. */
+export function mountMesh() {
+  document.querySelectorAll<HTMLElement>(".mesh-layer").forEach(mountOne);
+}
 
-  const win = window as Window & { [STATE_KEY]?: MeshState };
-  const prev = win[STATE_KEY];
+function mountOne(host: HTMLElement) {
+  const holder = host as HTMLElement & { [STATE_KEY]?: MeshState };
+  const prev = holder[STATE_KEY];
   if (prev) {
     prev.cancelFade();
     prev.abort.abort();
@@ -126,12 +128,19 @@ export function mountFooterMesh() {
 
   mount.canvasElement.setAttribute("aria-hidden", "true");
 
-  const root = host.closest<HTMLElement>(".footer-root");
-  const btn = root?.querySelector<HTMLElement>(".footer-cta-btn");
+  // Le calque réagit aux éléments [data-mesh-trigger] de sa racine
+  // [data-mesh-root] (le footer), ou de toute la page s'il est fixé au
+  // viewport (un bouton du hero peut alors le déclencher aussi).
+  const root = host.closest<HTMLElement>("[data-mesh-root]");
+  const scope: ParentNode = host.closest(".mesh-bg.is-fixed")
+    ? document
+    : (root ?? document);
+  const triggers = Array.from(
+    scope.querySelectorAll<HTMLElement>("[data-mesh-trigger]"),
+  );
   const abort = new AbortController();
 
-  const hovered = { current: false };
-  const focused = { current: false };
+  const active = new Set<HTMLElement>();
   let blend = 0;
   let fadeFrame = 0;
 
@@ -145,7 +154,7 @@ export function mountFooterMesh() {
   };
 
   const go = (on: boolean) => {
-    root?.classList.toggle("is-cta-hover", on);
+    root?.classList.toggle("is-mesh-active", on);
     const target = on ? 1 : 0;
     cancelAnimationFrame(fadeFrame);
     if (window.matchMedia(REDUCED).matches) {
@@ -164,47 +173,35 @@ export function mountFooterMesh() {
     fadeFrame = requestAnimationFrame(step);
   };
 
-  const sync = () => go(hovered.current || focused.current);
+  let wasActive = false;
+  const set = (el: HTMLElement, on: boolean) => {
+    if (on) active.add(el);
+    else active.delete(el);
+    const now = active.size > 0;
+    if (now !== wasActive) {
+      wasActive = now;
+      go(now);
+    }
+  };
 
-  btn?.addEventListener(
-    "pointerenter",
-    () => {
-      hovered.current = true;
-      sync();
-    },
-    { signal: abort.signal },
-  );
-  btn?.addEventListener(
-    "pointerleave",
-    () => {
-      hovered.current = false;
-      sync();
-    },
-    { signal: abort.signal },
-  );
-  btn?.addEventListener(
-    "focus",
-    () => {
-      focused.current = btn.matches(":focus-visible");
-      sync();
-    },
-    { signal: abort.signal },
-  );
-  btn?.addEventListener(
-    "blur",
-    () => {
-      focused.current = false;
-      sync();
-    },
-    { signal: abort.signal },
-  );
+  for (const el of triggers) {
+    const opts = { signal: abort.signal };
+    el.addEventListener("pointerenter", () => set(el, true), opts);
+    el.addEventListener("pointerleave", () => set(el, false), opts);
+    el.addEventListener(
+      "focus",
+      () => set(el, el.matches(":focus-visible")),
+      opts,
+    );
+    el.addEventListener("blur", () => set(el, false), opts);
+  }
 
   const desktop = window.matchMedia(DESKTOP);
   const reduced = window.matchMedia(REDUCED);
   const onChange = () => mount.setSpeed(desiredSpeed());
   desktop.addEventListener("change", onChange);
   reduced.addEventListener("change", onChange);
-  win[STATE_KEY] = {
+  holder[STATE_KEY] = {
     abort,
     onChange,
     desktop,

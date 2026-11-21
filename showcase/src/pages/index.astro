@@ -4,7 +4,16 @@ import "@fontsource-variable/geist-mono";
 import "../styles.css";
 import Header from "@hien/design-tokens/Header.astro";
 import Footer from "@hien/design-tokens/Footer.astro";
+import Button from "@hien/design-tokens/Button.astro";
+import Tag from "@hien/design-tokens/Tag.astro";
+import Thumbnail from "@hien/design-tokens/Thumbnail.astro";
+import Carousel from "@hien/design-tokens/Carousel.astro";
+import MeshBackground from "@hien/design-tokens/MeshBackground.astro";
+import { Image } from "astro:assets";
 import pkg from "@hien/design-tokens/package.json";
+import app1 from "../assets/app-1.png";
+import app2 from "../assets/app-2.png";
+import hero from "../assets/hero.jpg";
 
 const colors = [
   { token: "background", utility: "bg-background", note: "Canvas" },
@@ -101,13 +110,61 @@ const type = [
       </section>
 
       <section class="page-grid">
-        <div class="page-grid-content flex flex-col gap-6">
+        <div class="page-grid-content flex flex-col gap-16">
           <h2 class="mb-0">Composants</h2>
-          <div class="flex flex-col gap-3">
-            <span class="text-muted">Header · rendu en haut de cette page, tagline éditable dans Keystatic &gt; Header</span>
+
+          <div class="flex flex-col gap-4">
+            <span class="text-muted">Tag · @hien/design-tokens/Tag.astro</span>
+            <div class="flex flex-wrap gap-2">
+              <Tag class="mb-0">Side-projects</Tag>
+              <Tag class="mb-0">About</Tag>
+              <Tag class="mb-0">Services</Tag>
+            </div>
           </div>
+
+          <div class="flex flex-col gap-4">
+            <span class="text-muted">Button · outline, md (défaut)</span>
+            <Button href="https://cv.hien.design" label="Full resume" />
+            <span class="text-muted">Button · outline, lg, libellé au survol</span>
+            <Button href="mailto:gauthier@hien.design" label="Get in touch" hoverLabel="gauthier@hien.design" size="lg" />
+            <span class="text-muted">Button · inactif (sans lien)</span>
+            <Button label="Soon" />
+            <span class="text-muted">Button · overlay, sur une image</span>
+            <div class="relative aspect-video overflow-hidden border border-border">
+              <Image src={hero} alt="" class="absolute inset-0 w-full h-full object-cover" />
+              <div class="absolute inset-0 flex items-center justify-center p-4 md:p-16">
+                <Button href="https://apps.hien.design" label="Download on the App Store" variant="overlay" target="_blank" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <span class="text-muted">Thumbnail · square, video (carré sur mobile), wide</span>
+            <div class="grid grid-cols-2 gap-1">
+              <Thumbnail image={app1} alt="Capture d'app" />
+              <Thumbnail image={app2} alt="Capture d'app" />
+            </div>
+            <Thumbnail image={app1} alt="Capture d'app" aspect="video" />
+            <span class="text-muted">Thumbnail · padding none (image en cover)</span>
+            <Thumbnail image={hero} alt="" aspect="wide" padding="none" />
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <span class="text-muted">MeshBackground · fond animé (shader mesh, grain), réagit au bouton</span>
+            <div class="relative aspect-video overflow-hidden theme-dark text-foreground" data-mesh-root>
+              <MeshBackground />
+              <div class="relative z-10 h-full flex items-center justify-center p-4 md:p-16">
+                <Button href="https://apps.hien.design" label="Survole-moi" variant="outline" meshTrigger />
+              </div>
+            </div>
+            <p class="text-muted">
+              Sur apps.hien.design, le même fond est fixé au viewport
+              (Footer meshFixed) et visible à travers la fenêtre du hero.
+            </p>
+          </div>
+
           <div class="flex flex-col gap-3">
-            <span class="text-muted">Footer · rendu en bas de cette page, textes et liens dans Keystatic &gt; Footer</span>
+            <span class="text-muted">Header et Footer · en haut et en bas de cette page</span>
             <pre class="bg-background-muted p-4 overflow-x-auto font-mono text-xs leading-relaxed"><code>{`---
 import { getEntry } from "astro:content";
 import Footer from "@hien/design-tokens/Footer.astro";
@@ -118,6 +175,19 @@ const footer = await getEntry("footer-data", "index");
         </div>
       </section>
     </main>
+
+    <Carousel
+      class="pb-32"
+      tag="Carousel"
+      heading="Carousel"
+      body="Swiper, boutons précédent et suivant, slides qui débordent de la grille."
+      items={[
+        { image: app1, title: "Countdowns" },
+        { image: app2, title: "Picky", link: "https://apps.hien.design" },
+        { image: app1, title: "Boring Countdown" },
+        { image: app2, title: "Hey Calendar" },
+      ]}
+    />
 
     <Footer
       currentSite="home"

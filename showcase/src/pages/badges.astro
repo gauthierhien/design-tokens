@@ -1,0 +1,21 @@
+---
+import Docs from "../layouts/Docs.astro";
+import Demo from "../components/Demo.astro";
+import Tag from "@hien/design-tokens/Tag.astro";
+---
+
+<Docs title="Badges" lead="Mono en capitales, encre pleine. Marge basse de 1rem par défaut, au-dessus d'un titre.">
+  <Demo label="Tag" code={`<Tag>Side-projects</Tag>
+<Tag class="mb-0">About</Tag>   <!-- sans marge basse -->`}>
+    <div class="flex flex-wrap gap-2">
+      <Tag class="mb-0">Side-projects</Tag>
+      <Tag class="mb-0">About</Tag>
+      <Tag class="mb-0">Services</Tag>
+      <Tag class="mb-0">Currently</Tag>
+    </div>
+  </Demo>
+  <Demo label="Au-dessus d'un titre">
+    <Tag>Side-projects</Tag>
+    <h2 class="mb-0">In my spare time, I have fun building my own ideas</h2>
+  </Demo>
+</Docs>

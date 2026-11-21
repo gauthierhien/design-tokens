@@ -1,0 +1,23 @@
+---
+import Docs from "../layouts/Docs.astro";
+import { type } from "../data";
+---
+
+<Docs
+  title="Typographie"
+  lead="Geist Variable pour les titres et le texte, Geist Mono Variable pour les libellés, métadonnées et heures. Les tailles montent aux breakpoints md, lg, xl et 2xl : redimensionne la fenêtre."
+>
+  <ul class="border-b border-border divide-y divide-border">
+    {
+      type.map((t) => {
+        const El = t.el as any;
+        return (
+          <li class="px-4 md:px-8 py-8 flex flex-col gap-3 md:flex-row md:items-baseline md:gap-8">
+            <span class="text-muted md:w-32 shrink-0">text-{t.name}</span>
+            <El class={`mb-0 ${t.cls ?? ""}`}>{t.sample}</El>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Docs>

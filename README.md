@@ -19,7 +19,7 @@ pnpm add github:gauthierhien/hien-design-tokens#v1.3.0
 
 Load **Geist** and **Geist Mono** in the consuming app (e.g. `@fontsource-variable/geist` + mono). Fonts are not bundled here.
 
-Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the type scale (`text-h1` … `text-h4`, `text-body`, `text-body-prose`, `text-lead`, `text-label`). For local inverted surfaces, wrap with `.theme-dark`.
+Then use token-backed utilities: `bg-background`, `text-foreground`, `text-accent`, `border-border`, `bg-status`, `font-sans`, `font-mono`, plus the type scale (`text-h1` … `text-h4`, `text-body`, `text-body-prose`, `text-lead`, `text-label`) and the page grid (`page-grid`, `page-grid-content`, see DESIGN.md > Layout). For local inverted surfaces, wrap with `.theme-dark`.
 
 ## Composants partagés (Astro)
 

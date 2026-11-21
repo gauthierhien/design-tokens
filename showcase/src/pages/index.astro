@@ -109,6 +109,41 @@ const type = [
         </div>
       </section>
 
+      <section class="flex flex-col gap-8">
+        <div class="page-grid">
+          <div class="page-grid-content">
+            <h2>Grille</h2>
+            <p class="text-muted">
+              La même grille sur hien.design, feed, cv et apps : pleine
+              largeur avec 16px de marge sous md, puis 8 colonnes sans
+              gouttière. Le contenu (page-grid-content) occupe les colonnes 2
+              à 7, puis 3 à 6 dès 2xl. Redimensionne la fenêtre.
+            </p>
+          </div>
+        </div>
+        <div class="-mx-4 px-4 bg-background-muted py-6 flex flex-col gap-3">
+          <span class="text-muted">
+            <span class="md:hidden">sm · &lt; 768px · 1 colonne</span>
+            <span class="hidden md:inline 2xl:hidden">md à xl · 768 à 1535px · contenu 2 à 7</span>
+            <span class="hidden 2xl:inline">2xl · ≥ 1536px · contenu 3 à 6</span>
+          </span>
+          <div class="relative">
+            <div class="hidden md:grid grid-cols-8 absolute inset-0" aria-hidden="true">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div class="border-l border-border last:border-r flex items-start justify-center pt-2">
+                  <span class="text-muted">{i + 1}</span>
+                </div>
+              ))}
+            </div>
+            <div class="page-grid relative">
+              <div class="page-grid-content bg-accent/60 h-40 md:mt-10 flex items-center justify-center">
+                <span>.page-grid-content</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="page-grid">
         <div class="page-grid-content flex flex-col gap-16">
           <h2 class="mb-0">Composants</h2>

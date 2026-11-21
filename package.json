@@ -14,8 +14,14 @@
     "./DESIGN.md": "./DESIGN.md",
     "./Header.astro": "./components/Header.astro",
     "./Footer.astro": "./components/Footer.astro",
-    "./sites": "./components/sites.js",
-    "./keystatic": "./components/keystatic.js",
+    "./sites": {
+      "types": "./components/sites.d.ts",
+      "default": "./components/sites.js"
+    },
+    "./keystatic": {
+      "types": "./components/keystatic.d.ts",
+      "default": "./components/keystatic.js"
+    },
     "./package.json": "./package.json",
     "./Button.astro": "./components/Button.astro",
     "./Tag.astro": "./components/Tag.astro",
